@@ -1,0 +1,1 @@
+Reversi game played from the console that has a simple AI
