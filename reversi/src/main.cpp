@@ -15,8 +15,8 @@
 
 BOOL isAiPlayerTurn(sSettings set)
 {
-	AiPlayer ai = set.ai;
-	int player = set.pl;
+	auto ai = set.ai;
+	auto player = set.pl;
 
 	return 	ai == BOTH_AI ||
 			ai == BLACK_AI && player == BLACK ||
@@ -71,8 +71,8 @@ void changePlayer(sSettings *set)
 }
 
 int main(int argc, char *argv[]) {
-	int canBlackMove = TRUE;
-	int canWhiteMove = TRUE;
+	auto canBlackMove = TRUE;
+	auto canWhiteMove = TRUE;
 	int i;
 	int board[BOARD_MAX+1];
 	FILE *fp;
