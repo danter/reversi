@@ -20,7 +20,7 @@
   </Target>
 
   <Target Name="RestoreNuget">
-    <Exec Command='nuget restore $(SolutionFile)' />
+    <Exec Command='nuget restore "$(SolutionFile)"' />
   </Target>
 
 </Project>
