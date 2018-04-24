@@ -15,8 +15,8 @@
 
 BOOL isAiPlayerTurn(sSettings set)
 {
-	auto ai = set.ai;
-	auto player = set.pl;
+	const auto ai = set.ai;
+	const auto player = set.pl;
 
 	return 	ai == BOTH_AI ||
 			ai == BLACK_AI && player == BLACK ||
@@ -73,13 +73,10 @@ void changePlayer(sSettings *set)
 int main(int argc, char *argv[]) {
 	auto canBlackMove = TRUE;
 	auto canWhiteMove = TRUE;
-	int i;
 	int board[BOARD_MAX+1];
-	FILE *fp;
 	int hints[BOARD_MAX+1] = { 0 };
 
-
-	fp = _fsopen(LOG_NAME, "w", _SH_DENYNO);
+	const auto fp = _fsopen(LOG_NAME, "w", _SH_DENYNO);
 	if (fp == NULL) {
 		fprintf(stderr, "Can't open %s\n", LOG_NAME);
 		return 1;
@@ -88,17 +85,27 @@ int main(int argc, char *argv[]) {
 	initGame(board);
 	sSettings set = cmdRead(board, argc, argv, fp);
 
+	set.ai = WHITE_AI;
+
 //	AIScoreTable(temp);
 //	drawBoard(board, temp);
 
 	// Calculate hints 
-	if(set.ht == 1)
+	if (set.ht == 1)
+	{
 		hintPlayer(board, hints, set.pl);
-	else if(set.ht == 2)
+	}
+	else if (set.ht == 2)
+	{
 		AIEvalBoard(board, hints, set.pl);
+	}
 	else
-		for(i=0; i<BOARD_MAX; i++)
+	{
+		for (auto i = 0; i < BOARD_MAX; i++)
+		{
 			hints[i] = ' ';
+		}
+	}
 
 	drawBoard(board, hints);
 
@@ -113,7 +120,7 @@ int main(int argc, char *argv[]) {
 		else break;
 
 		// Input from either an AI or a player 
-		const sCord move = readInput(board, hints, set);
+		const auto move = readInput(board, hints, set);
 
 		// log and make the move 
 		fprintf(fp, "%c%d ", move.x+65, move.y);
@@ -138,13 +145,21 @@ int main(int argc, char *argv[]) {
 		}
 
 		/*	Calculate hints */
-		if(set.ht == 1)
-				hintPlayer(board, hints, set.pl);
-		else if(set.ht == 2)
-				AIEvalBoard(board, hints, set.pl);
+		if (set.ht == 1)
+		{
+			hintPlayer(board, hints, set.pl);
+		}
+		else if (set.ht == 2)
+		{
+			AIEvalBoard(board, hints, set.pl);
+		}
 		else
-			for(i=0; i<BOARD_MAX; i++)
+		{
+			for (auto i = 0; i < BOARD_MAX; i++)
+			{
 				hints[i] = ' ';
+			}
+		}
 
 		drawBoard(board, hints);
 	}

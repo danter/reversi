@@ -43,7 +43,8 @@ sSettings cmdRead(int board[], int argc, char *argv[], FILE *fp) {
 			dispHelp(argv[0]);
 			exit(1);
 		}
-		else if(isArgument("-ai1", value) || isArgument("-ai", value)) {
+
+		if(isArgument("-ai1", value) || isArgument("-ai", value)) {
 			tmp.ai = WHITE_AI;
 		}
 		else if(isArgument("-ai2", value)) {
@@ -82,10 +83,7 @@ sSettings cmdRead(int board[], int argc, char *argv[], FILE *fp) {
 
 
 void initGame(int board[]) {
-	int i;
-
-	// Clear the board
-	for(i=0; i<BOARD_MAX; i++)
+	for(auto i = 0; i<BOARD_MAX; i++)
 		board[i] = ' ';
 
 	// Place the 4 starting markers
@@ -309,59 +307,61 @@ void hintPlayer(CINT board[], int hints[], const char val) {
 }
 
 // Calculates and returns the player score
-int calcScore(CINT board[], const char val) {
+int calcScore(CINT board[], const char player) {
 	int i, score;
 
-	for(i=0, score=0; i < BOARD_MAX; i++)
-		if( board[i] == val)
+	for (i = 0, score = 0; i < BOARD_MAX; i++)
+	{
+		if (board[i] == player)
 			score++;
+	}
 
 	return score;
 }
 
 
 void drawBoard(CINT board[], CINT hints[]) {
-	int x, y, i;
-
 	printf("\n");
 
 	printf("   ");
-	for(i=0; i<COL; i++)
+	for(auto i=0; i<COL; i++)
 		printf("%c ", i+65);
 	printf(" \n");
 
 	printf("  \xda");
-	for(i=0; i<COL-1; i++)
+	for(auto i=0; i<COL-1; i++)
 		printf("\xc4\xc2");
 	printf("\xc4\xbf\n");
 
 
-	for(y=0; y<ROW; y++) {
+	for(auto y = 0; y<ROW; y++) {
 		printf(" %x\xb3", y);
-		for(x=0; x<COL; x++) {
-			if ( board[y*ROW+x] == ' ') {
-				if(hints[y*ROW+x] == 0 || hints[y*ROW+x] == ' ')
+		for(auto x = 0; x<COL; x++) {
+			const auto current_pos = y * ROW + x;
+
+			if ( board[current_pos] == ' ') {
+				if(hints[y*ROW+x] == 0 || hints[current_pos] == ' ')
 					printf("%c\xb3", ' ');
-				else if (hints[y*ROW+x] == HINT)
+				else if (hints[current_pos] == HINT)
 					printf("%c\xb3", HINT);
-				else if (hints[y*ROW+x] < 0)
-					printf("%d\xb3", hints[y*ROW+x]);
+				else if (hints[current_pos] < 0)
+					printf("%d\xb3", hints[current_pos]);
 				else
-					printf("%x\xb3", hints[y*ROW+x]);
+					printf("%x\xb3", hints[current_pos]);
 			}
 			else
-				printf("%c\xb3", board[y*ROW+x]);
+				printf("%c\xb3", board[current_pos]);
 		}
 		printf("\n");
 		if(y<ROW-1) {
 			printf("  \xc3");
-			for(i=0; i<COL-1; i++)
+			for(auto i=0; i<COL-1; i++)
 				printf("\xc4\xc5");
 			printf("\xc4\xb4\n");
 		}
 	}
 	printf("  \xc0");
-	for(i=0; i<COL-1; i++)
+	for(auto i=0; i<COL-1; i++)
 		printf("\xc4\xc1");
 	printf("\xc4\xd9\n");
 
