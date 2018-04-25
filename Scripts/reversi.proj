@@ -24,7 +24,7 @@
   </Target>
 
   <Target Name="UnitTest">
-    <Exec Command="nunit3-console --result=TestResult_$(Configuration).xml $(SolutionDir)\UnitTests\bin\$(Configuration)\UnitTests.dll" />
+    <Exec Command='nunit3-console --result=TestResult_$(Configuration).xml "$(SolutionDir)\UnitTests\bin\$(Configuration)\UnitTests.dll"' />
   </Target>
 
 </Project>
