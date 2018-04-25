@@ -9,22 +9,22 @@
     <Platform>X64</Platform>
   </PropertyGroup>
 
-  <Target Name="All" DependsOnTargets="Clean; Build; UnitTest"/>
-
   <Target Name="RestoreNuget">
-    <Exec Command='nuget restore "$(SolutionFile)"' />
+    <Exec Command="nuget restore &quot;$(SolutionFile)&quot;" />
   </Target>
 
   <Target Name="Build" DependsOnTargets="RestoreNuget">
     <MSBuild Projects="$(SolutionFile)" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
   </Target>
 
-  <Target Name="Clean" >
+  <Target Name="Clean">
     <MSBuild Projects="$(SolutionFile)" Targets="Clean" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
   </Target>
 
   <Target Name="UnitTest">
-    <Exec Command="nunit3-console --result=TestResult_$(Configuration).xml $(SolutionDir)\UnitTests\bin\$(Configuration)\UnitTests.dll" />
+    <Exec Command="nunit3-console --result=TestResult_$(Configuration).xml &quot;$(SolutionDir)\UnitTests\bin\$(Configuration)\UnitTests.dll&quot;" />
   </Target>
+
+  <Target Name="All" DependsOnTargets="Clean; Build; UnitTest" />
 
 </Project>
