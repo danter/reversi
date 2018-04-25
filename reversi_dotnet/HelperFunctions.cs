@@ -32,7 +32,8 @@ namespace aspa.reversi
             }
             else
             {
-                cord = ReadMove();
+                var input = ReadInput();
+                cord = ReadMove(input);
                 while (!IsValidMove(board, cord, config.Player))
                 {
                     Console.WriteLine("You can't place a piece there!\n");
@@ -41,28 +42,34 @@ namespace aspa.reversi
                         ? "BLACK, make your move: "
                         : "WHITE, make your move: ");
 
-                    cord = ReadMove();
+                    input = ReadInput();
+                    cord = ReadMove(input);
                 }
             }
 
             return cord;
         }
 
-        public static Pos ReadMove()
+        public static string ReadInput()
         {
-            var cord = new Pos();
-
             string input = null;
             while (input == null)
             {
                 input = Console.ReadLine();
             }
 
+            return input;
+        }
+
+        public static Pos ReadMove(string input)
+        {
+            var cord = new Pos();
+
             foreach (var character in input)
             {
                 if (char.IsLetter(character))
                 {
-                    cord.X = Converters.ConvertLetterToPos(character);
+                    cord.X = Pos.ConvertLetter(character);
                 }
 
                 if (char.IsDigit(character))
