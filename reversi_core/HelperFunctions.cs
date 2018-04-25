@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using aspa.reversi.Models;
-using reversi_core;
 
 namespace aspa.reversi
 {
@@ -21,9 +20,9 @@ namespace aspa.reversi
             board[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.Black;
         }
 
-        public static Cord ReadInput(Config config, int[] board, int[] hints)
+        public static Pos ReadInput(Config config, int[] board, int[] hints)
         {
-            var cord = new Cord();
+            var cord = new Pos();
 
             // Todo: Implement AIEvalBoard
             if (IsAiPlayerTurn(config))
@@ -49,9 +48,9 @@ namespace aspa.reversi
             return cord;
         }
 
-        public static Cord ReadMove()
+        public static Pos ReadMove()
         {
-            var cord = new Cord();
+            var cord = new Pos();
 
             string input = null;
             while (input == null)
@@ -63,7 +62,7 @@ namespace aspa.reversi
             {
                 if (char.IsLetter(character))
                 {
-                    cord.X = ConvertLetterToCoordinate(character);
+                    cord.X = Converters.ConvertLetterToPos(character);
                 }
 
                 if (char.IsDigit(character))
@@ -77,39 +76,7 @@ namespace aspa.reversi
             return cord;
         }
 
-        public static int ConvertLetterToCoordinate(char character)
-        {
-            var str = character.ToString().ToUpper();
-
-            switch (str)
-            {
-                case "A":
-                    return 0;
-                case "B":
-                    return 1;
-                case "C":
-                    return 2;
-                case "D":
-                    return 3;
-                case "E":
-                    return 4;
-                case "F":
-                    return 5;
-                case "G":
-                    return 6;
-                case "H":
-                    return 7;
-                case "I":
-                    return 8;
-                case "J":
-                    return 9;
-
-                default:
-                    return -1;
-            }
-        }
-
-        public static bool IsValidMove(int[] board, Cord readLine, int player)
+        public static bool IsValidMove(int[] board, Pos readLine, int player)
         {
             throw new NotImplementedException();
         }
@@ -140,8 +107,9 @@ namespace aspa.reversi
             for (var i = 0; i < Constants.BoardMax; i++)
             {
                 if (board[i] == player)
+                {
                     score++;
-
+                }
             }
 
             return score;

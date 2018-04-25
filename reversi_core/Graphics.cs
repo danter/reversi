@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace reversi_core
+namespace aspa.reversi
 {
     public class Graphics
     {

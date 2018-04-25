@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using aspa.reversi.Models;
-using reversi_core;
 
 namespace aspa.reversi
 {
@@ -21,7 +20,7 @@ namespace aspa.reversi
             Console.WriteLine("-l <file>\tLoads the saved game <file>.\n");
         }
 
-        public static Config ReadCommandLineArgumants(int[] board, string[] arguments, string logFileName)
+        public static Config ReadCommandLineArgumants(int[] board, string[] arguments)
         {
             var config = new Config
             {
@@ -30,8 +29,9 @@ namespace aspa.reversi
                 Player = Constants.Black,
             };
 
-            foreach (var argument in arguments)
+            for (var index = 0; index < arguments.Length; index++)
             {
+                var argument = arguments[index];
                 if (argument.Contains("-h"))
                 {
                     DisplayHelp();
@@ -57,13 +57,15 @@ namespace aspa.reversi
                         config.Hints = BoardHints.NumericHints;
                         continue;
                     case "-l":
-                        config.Player = LoadGame(board, logFileName);
+                        var saveFile = arguments[++index];
+                        config.Player = LoadGame(board, saveFile);
                         if (config.Player == 0)
                         {
                             Console.WriteLine("File load failed, exiting.\n");
                             DisplayHelp();
                             Environment.Exit(1);
                         }
+
                         continue;
 
                     default:
@@ -78,19 +80,25 @@ namespace aspa.reversi
         }
 
         // Todo: Verify the magic numbers 65 and 48 when it's UTF16
-        public static int LoadGame(int[] board, string logFile)
+        public static int LoadGame(int[] board, string saveFile)
         {
             var logLine = "";
-            if (File.Exists(logFile))
+            if (File.Exists(saveFile))
             {
-                logLine = File.ReadAllText(Constants.LogName);
+                logLine = File.ReadAllText(saveFile);
+            }
+            else
+            {
+                Console.WriteLine("Invalid savefile: " + saveFile);
+                DisplayHelp();
+                Environment.Exit(1);
             }
 
             var player = Constants.Black;
 
             foreach (var character in logLine)
             {
-                var coord = new Cord();
+                var coord = new Pos();
 
                 if (char.IsLetter(character))
                 {
@@ -102,6 +110,7 @@ namespace aspa.reversi
                 }
                 else
                 {
+                    // Todo: implement DoMove and DrawPiece
                     //DoMove(board, coord, player);
                     //DrawPiece(board, coord, player);
 

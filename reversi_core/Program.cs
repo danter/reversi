@@ -1,6 +1,5 @@
 ﻿using System;
 using aspa.reversi.Models;
-using reversi_core;
 
 namespace aspa.reversi
 {
@@ -12,7 +11,7 @@ namespace aspa.reversi
             var hints = new int[Constants.BoardMax + 1];
 
             HelperFunctions.InitGame(board);
-            var config = ConfigHandler.ReadCommandLineArgumants(board, args, Constants.LogName);
+            var config = ConfigHandler.ReadCommandLineArgumants(board, args);
 
             // AIScoreTable(temp);
             //DrawBoard(board, temp);
@@ -45,8 +44,11 @@ namespace aspa.reversi
             Console.ReadKey();
         }
 
+
         private static void RunGameLoop(Config config, int[] board, int[] hints)
         {
+            var gameLogger = new GameLogger();
+
             var canBlackMove = true;
             var canWhiteMove = true;
 
@@ -66,9 +68,10 @@ namespace aspa.reversi
 
                 var move = HelperFunctions.ReadInput(config, board, hints);
 
+                gameLogger.WriteToGamelog(move);
+
                 // Todo: Continue implementing the main loop
             }
         }
-
     }
 }
