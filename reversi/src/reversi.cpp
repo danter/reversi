@@ -103,7 +103,7 @@ int insideBoard(int x, int y) {
 
 
 // Reads input from the player and returns a coordinate
-sCord readMove(void) {
+sCord readMove() {
 	sCord c;
 	char tmp=0, tmp2=0;
 
