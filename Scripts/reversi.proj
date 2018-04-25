@@ -3,13 +3,17 @@
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <BaseDir>$(MSBuildProjectDirectory)\..</BaseDir>
-    <SolutionFile>$(BaseDir)\reversi.sln</SolutionFile>
+    <SolutionDir>$(MSBuildProjectDirectory)\..</SolutionDir>
+    <SolutionFile>$(SolutionDir)\reversi.sln</SolutionFile>
     <Configuration>Release</Configuration>
     <Platform>X64</Platform>
   </PropertyGroup>
 
-  <Target Name="All" DependsOnTargets="Clean; Build"/>
+  <Target Name="All" DependsOnTargets="Clean; Build; UnitTest"/>
+
+  <Target Name="RestoreNuget">
+    <Exec Command='nuget restore "$(SolutionFile)"' />
+  </Target>
 
   <Target Name="Build" DependsOnTargets="RestoreNuget">
     <MSBuild Projects="$(SolutionFile)" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
@@ -19,8 +23,8 @@
     <MSBuild Projects="$(SolutionFile)" Targets="Clean" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
   </Target>
 
-  <Target Name="RestoreNuget">
-    <Exec Command='nuget restore "$(SolutionFile)"' />
+  <Target Name="UnitTest">
+    <Exec Command="nunit3-console --result=TestResult_$(Configuration).xml $(SolutionDir)\UnitTests\bin\$(Configuration)\UnitTests.dll" />
   </Target>
 
 </Project>
