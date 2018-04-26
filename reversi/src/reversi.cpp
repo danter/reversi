@@ -97,8 +97,7 @@ void initGame(int board[]) {
 int insideBoard(int x, int y) {
 	if( y < ROW && y >= 0 && x < COL && x >= 0 )
 		return 1;
-	else
-		return 0;
+	return 0;
 }
 
 
@@ -174,7 +173,7 @@ void drawPiece(int board[], sCord c, const char val) {
 
 
 // returns 1 if the move is valid, othervise it returns 0
-BOOL validMove(CINT board[], sCord c, const char val) {
+BOOL validMove(CINT board[], sCord c, const char player) {
 	char tval;
 
 	if(c.x<0 || c.x>COL-1 || c.y<0 || c.y>ROW-1) {
@@ -185,9 +184,9 @@ BOOL validMove(CINT board[], sCord c, const char val) {
 		return FALSE;
 	}
 
-	if( val == BLACK )
+	if( player == BLACK )
 		tval = WHITE;
-	else if( val == WHITE)
+	else if( player == WHITE)
 		tval = BLACK;
 	else {
 		fprintf(stderr, "Unknown piece color in validMove(): exiting\n");
@@ -196,14 +195,12 @@ BOOL validMove(CINT board[], sCord c, const char val) {
 
 	for(auto y = c.y-1; y<=c.y+1; y++) {
 		for(auto x = c.x-1; x<=c.x+1; x++) {
-			if( insideBoard(x,y) ) {
-				if(board[y*ROW+x] == tval) {
-					if(traceMove(board, c, x-c.x, y-c.y, val)) {
-						return TRUE;
-					}
-				}
-			}
-
+			if (!insideBoard(x, y))
+				continue;
+			if (board[y*ROW + x] != tval)
+				continue;
+			if(traceMove(board, c, x-c.x, y-c.y, player))
+				return TRUE;
 		}
 	}
 	return FALSE;
@@ -253,7 +250,7 @@ BOOL traceMove(CINT board[], sCord c, int dx, int dy, const char val) {
 	for(c.y+=dy, c.x+=dx; insideBoard(c.x,c.y); c.y+=dy, c.x+=dx) {
 		if(board[c.y*ROW+c.x] == val)
 			return TRUE;
-		else if(board[c.y*ROW+c.x] == ' ')
+		if(board[c.y*ROW+c.x] == ' ')
 			return FALSE;
 	}
 
@@ -268,8 +265,7 @@ BOOL doTraceMove(int board[], sCord c, int dx, int dy, const char val) {
 	for(c.y+=dy, c.x+=dx; insideBoard(c.x,c.y); c.y+=dy, c.x+=dx) {
 		if(board[c.y*ROW+c.x] == val)
 			return TRUE;
-		else
-			board[c.y*ROW+c.x] = val;
+		board[c.y*ROW+c.x] = val;
 	}
 	return FALSE;
 }

@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 //	AIScoreTable(temp);
 //	drawBoard(board, temp);
 
-	// Calculate hints 
+	// Calculate hints
 	if (set.ht == 1)
 	{
 		hintPlayer(board, hints, set.pl);
