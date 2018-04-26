@@ -167,10 +167,6 @@ UINT loadGame(int board[], char file[], FILE *fp) {
 	return player;
 }
 
-void drawPiece(int board[], sCord c, const char val) {
-	board[c.y*ROW+c.x] = val;
-}
-
 char getOtherPlayer(char player)
 {
 	char otherplayer;
@@ -212,6 +208,10 @@ BOOL validMove(CINT board[], sCord c, const char player) {
 	return FALSE;
 }
 
+void drawPiece(int board[], sCord move, const char currentPlayer) {
+	board[move.y*ROW + move.x] = currentPlayer;
+}
+
 // Checks the move and turns the pieces
 void doMove(int board[], sCord move, const char player) {
 	
@@ -230,7 +230,7 @@ void doMove(int board[], sCord move, const char player) {
 				continue;
 
 			if(traceMove(board, move, x-move.x, y-move.y, player)) {
-				doTraceMove(board, move, x - move.x, y - move.y, player);
+				doTraceMove(board, move, x-move.x, y-move.y, player);
 			}
 		}
 	}
