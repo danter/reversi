@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InputHandler.cs" />
     <Compile Include="Models\AiPlayer.cs" />
     <Compile Include="Models\BoardHints.cs" />
     <Compile Include="Models\Config.cs" />
@@ -49,7 +50,6 @@
     <Compile Include="Constants.cs" />
     <Compile Include="GameLogger.cs" />
     <Compile Include="Graphics.cs" />
-    <Compile Include="HelperFunctions.cs" />
     <Compile Include="Models\Pos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

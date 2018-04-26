@@ -26,7 +26,7 @@ namespace UnitTests
         {
             var expectedPos = new Pos { X = xPos, Y = yPos};
 
-            var actualPos = HelperFunctions.ReadMove(stringToConvert);
+            var actualPos = InputHandler.ReadMove(stringToConvert);
 
             Assert.AreEqual(expectedPos, actualPos);
         }
