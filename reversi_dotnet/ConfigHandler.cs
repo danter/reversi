@@ -110,9 +110,9 @@ namespace aspa.reversi
                 }
                 else
                 {
-                    // Todo: implement DoMove and DrawPiece
-                    //DoMove(board, coord, player);
-                    //DrawPiece(board, coord, player);
+                    // Todo: implement MakeMove and PlacePiece
+                    //MakeMove(board, coord, player);
+                    //PlacePiece(board, coord, player);
 
                     player = player == Constants.Black ? Constants.White : Constants.Black;
                 }

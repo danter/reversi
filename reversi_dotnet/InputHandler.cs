@@ -54,11 +54,28 @@ namespace aspa.reversi
             return move;
         }
 
+        private static char GetOtherPlayer(char player)
+        {
+            var otherPlayer = '\0';
+            switch (player)
+            {
+                case Constants.Black:
+                    otherPlayer = Constants.White;
+                    break;
+                case Constants.White:
+                    otherPlayer = Constants.Black;
+                    break;
+                default:
+                    Console.WriteLine("Unknown piece color in IsValidMove(): exiting");
+                    Environment.Exit(1);
+                    break;
+            }
+
+            return otherPlayer;
+        }
 
         public static bool IsValidMove(char[] board, Pos pos, char player)
         {
-            var otherPlayer = '\0';
-
             if (pos.X < 0)
                 return false;
             if (pos.X > Constants.Col - 1)
@@ -73,19 +90,7 @@ namespace aspa.reversi
                 return false;
             }
 
-            switch (player)
-            {
-                case Constants.Black:
-                    otherPlayer = Constants.White;
-                    break;
-                case Constants.White:
-                    otherPlayer = Constants.Black;
-                    break;
-                default:
-                    Console.WriteLine("Unknown piece color in IsValidMove(): exiting");
-                    Environment.Exit(1);
-                    break;
-            }
+            var otherPlayer = GetOtherPlayer(player);
 
             for (var y = 0; y <= pos.Y + 1; y++)
             {
@@ -111,17 +116,54 @@ namespace aspa.reversi
             return false;
         }
 
+        public static void PlacePiece(char[] board, Pos move, char currentPlayer)
+        {
+            board[move.Y * Constants.Row + move.X] = currentPlayer;
+        }
+
+        // Validates the move and turns the pieces
+        public static void MakeMove(char[] board, Pos move, char player)
+        {
+            if (board[move.Y * Constants.Row + move.X] != ' ')
+            {
+                return;
+            }
+
+            var otherPlayer = GetOtherPlayer(player);
+
+            for (var y = move.Y-1; y <= move.Y+1; y++)
+            {
+                for (var x = move.X-1; x <= move.X+1; x++)
+                {
+                    if (!IsInsideBoard(x, y))
+                    {
+                        continue;
+                    }
+
+                    if (board[y * Constants.Row + x] != otherPlayer)
+                    {
+                        continue;
+                    }
+
+                    if (TraceMove(board, move, x-move.X, y-move.Y, player))
+                    {
+                        DoTraceMove(board, move, x-move.X, y-move.Y, player);
+                    }
+                }
+            }
+        }
+
         // Checks if a row of markers can be captured,
         // ie. if a marker of your own color is at the end of the row.
         // It takes the board, the current coordinate, the difference in x and y
         // and what value it should check for
-        private static bool TraceMove(char[] board, Pos pos, int dx, int dy, char player)
+        private static bool TraceMove(char[] board, Pos move, int dx, int dy, char player)
         {
-            var tPos = new Pos(pos);
+            var tMove = new Pos(move);
 
-            for (tPos.Y += dy, tPos.X += dx; IsInsideBoard(tPos.X, tPos.Y); tPos.X += dx, tPos.Y+=dy)
+            for (tMove.Y += dy, tMove.X += dx; IsInsideBoard(tMove.X, tMove.Y); tMove.X += dx, tMove.Y+=dy)
             {
-                var tracePos = tPos.Y * Constants.Row + tPos.X;
+                var tracePos = tMove.Y * Constants.Row + tMove.X;
                 if (board[tracePos] == player)
                 {
                     return true;
@@ -133,6 +175,24 @@ namespace aspa.reversi
             }
 
             return false;
+        }
+
+        // Almost the same as TraceMove(), exept this methos actually performs the move
+        // WARNING: TraceMove() should be used before this or pieces that
+        // should not be turned will get turned. 
+        private static void DoTraceMove(char[] board, Pos move, int dx, int dy, char player)
+        {
+            var tMove = new Pos(move);
+
+            for (tMove.X+=dx, tMove.Y+=dy; IsInsideBoard(tMove.X, tMove.Y); tMove.X+=dx, tMove.Y += dy)
+            {
+                if (board[tMove.Y*Constants.Row+tMove.X] == player)
+                {
+                    return;
+                }
+
+                board[tMove.Y * Constants.Row + tMove.X] = player;
+            }
         }
 
         private static bool IsInsideBoard(int x, int y)
@@ -176,7 +236,6 @@ namespace aspa.reversi
                     var str = character.ToString();
                     cord.Y = int.Parse(str);
                 }
-
             }
 
             return cord;

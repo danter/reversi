@@ -45,7 +45,6 @@ namespace aspa.reversi
             Console.ReadKey();
         }
 
-
         private static void RunGameLoop(Config config, char[] board, char[] hints)
         {
             var gameLogger = new GameLogger();
@@ -70,6 +69,9 @@ namespace aspa.reversi
                 var move = InputHandler.ReadInput(config, board, hints);
 
                 gameLogger.WriteToGamelog(move);
+
+                InputHandler.MakeMove(board, move, config.Player);
+                InputHandler.PlacePiece(board, move, config.Player);
 
                 // Todo: Continue implementing the main loop
             }

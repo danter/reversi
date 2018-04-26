@@ -19,9 +19,6 @@ namespace UnitTests
             Assert.AreEqual(expectedAsciiString, actualAsciiString);
         }
 
-        [TestCase("A5", 0, 5)]
-        [TestCase("E2", 4, 2)]
-        [TestCase("G3", 6, 3)]
         [TestCase("A9", 0, 9)]
         [TestCase("B8", 1, 8)]
         [TestCase("C7", 2, 7)]
@@ -32,6 +29,7 @@ namespace UnitTests
         [TestCase("H2", 7, 2)]
         [TestCase("I1", 8, 1)]
         [TestCase("J0", 9, 0)]
+        [TestCase("a0", 0, 0)]
         [TestCase("b1", 1, 1)]
         [TestCase("c2", 2, 2)]
         [TestCase("d3", 3, 3)]
@@ -41,9 +39,9 @@ namespace UnitTests
         [TestCase("h7", 7, 7)]
         [TestCase("i8", 8, 8)]
         [TestCase("j9", 9, 9)]
-        public void ReadMove_ConvertAsciiCharactersToPos_CorrectPosIsRetrieved(string stringToConvert, int xPos, int yPos)
+        public void ReadMove_ConvertAsciiCharactersToPos_CorrectPosIsRetrieved(string stringToConvert, int expectedXPos, int expectedYPos)
         {
-            var expectedPos = new Pos { X = xPos, Y = yPos};
+            var expectedPos = new Pos { X = expectedXPos, Y = expectedYPos};
 
             var actualPos = InputHandler.ReadMove(stringToConvert);
 
@@ -129,7 +127,7 @@ namespace UnitTests
         [TestCase("F2", Constants.Black, false)]
         [TestCase("B4", Constants.Black, false)]
         [TestCase("D5", Constants.Black, false)]
-        public void IsValidMove_CheckIfComplexeMoveIsValid_ExpectCorrectBehaviourFromProvidedMoveResult(string moveInput, char currentPlayer, bool expectedMoveResult )
+        public void IsValidMove_CheckIfComplexMoveIsValid_ExpectCorrectBehaviourFromProvidedMoveResult(string moveInput, char currentPlayer, bool expectedMoveResult )
         {
             const char b = Constants.Black;
             const char w = Constants.White;
@@ -152,6 +150,160 @@ namespace UnitTests
 
             Assert.AreEqual(expectedMoveResult, actualResult);
 
+        }
+
+        private const char B = Constants.Black;
+        private const char W = Constants.White;
+
+        [TestCase("G6", Constants.Black, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ', W ,' ',' ', W ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , B , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , B ,' ',' ',' ', // 4
+            ' ',' ', W ,' ',' ', B ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ', B ,' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase("E5", Constants.Black, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ', W ,' ',' ', W ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , B ,' ',' ',' ', // 4
+            ' ',' ', W ,' ', B , W ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase("E0", Constants.White, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ', W ,' ',' ', W ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ', W ,' ',' ',' ', // 0
+            ' ',' ',' ',' ', W ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', W ,' ',' ',' ', // 2
+            ' ', W , W , W , W ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ', W ,' ',' ', W ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase("D5", Constants.White, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ', W ,' ',' ', W ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', W , W ,' ',' ',' ', // 4
+            ' ',' ', W , W ,' ', W ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase("C4", Constants.Black, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , W , W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ', W ,' ',' ', W ,' ',' ', // 5
+            ' ',' ', B ,' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 1
+            ' ',' ', B ,' ', B ,' ',' ',' ', // 2
+            ' ', W , B , B , B ,' ',' ',' ', // 3
+            ' ',' ', B , B , W ,' ',' ',' ', // 4
+            ' ',' ', B ,' ',' ', W ,' ',' ', // 5
+            ' ',' ', B ,' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase("D4", Constants.Black, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ', B , B , B , B , B ,' ',' ', // 2
+            ' ', B , W , W , W , B ,' ',' ', // 3
+            ' ', B , W ,' ', W , B ,' ',' ', // 4
+            ' ', B , W , W , W , B ,' ',' ', // 5
+            ' ', B , B , B , B , B ,' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ', B , B , B , B , B ,' ',' ', // 2
+            ' ', B , B , B , B , B ,' ',' ', // 3
+            ' ', B , B , B , B , B ,' ',' ', // 4
+            ' ', B , B , B , B , B ,' ',' ', // 5
+            ' ', B , B , B , B , B ,' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        public void MakeMove_CheckIfMoveTurnsPiecesProperly_CorrectNewBoardIsObtained(string stringMove, char currentPlayer, char[] startBoard, char[] expectedBoardAfterMove)
+        {
+            var expectedStringBoardAfterMove = new string(expectedBoardAfterMove);
+            var move = InputHandler.ReadMove(stringMove);
+
+            InputHandler.MakeMove(startBoard, move, currentPlayer);
+            InputHandler.PlacePiece(startBoard, move, currentPlayer);
+
+            var actualBoardAfterMove = new string(startBoard);
+
+            Assert.AreEqual(expectedStringBoardAfterMove, actualBoardAfterMove);
         }
     }
 }
