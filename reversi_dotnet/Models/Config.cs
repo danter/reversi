@@ -4,6 +4,6 @@
     {
         public AiPlayer Ai;
         public BoardHints Hints;
-        public int Player;
+        public char Player;
     }
 }

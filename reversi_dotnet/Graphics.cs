@@ -4,7 +4,7 @@ namespace aspa.reversi
 {
     public class Graphics
     {
-        public static void DrawBoard(int[] board, int[] hints)
+        public static void DrawBoard(char[] board, char[] hints)
         {
             Console.WriteLine();
             Console.Write("   ");
@@ -28,7 +28,7 @@ namespace aspa.reversi
                     {
                         switch (hints[currentPos])
                         {
-                            case 0:
+                            case (char)0:
                             case ' ':
                                 Console.Write(" │");
                                 break;
@@ -38,7 +38,7 @@ namespace aspa.reversi
                             default:
                                 if (hints[currentPos] < 0)
                                 {
-                                    Console.Write((char)hints[currentPos] + "│");
+                                    Console.Write(hints[currentPos] + "│");
                                 }
 
                                 break;
@@ -46,7 +46,7 @@ namespace aspa.reversi
                     }
                     else
                     {
-                        Console.Write((char)board[currentPos] + "│");
+                        Console.Write(board[currentPos] + "│");
                     }
 
                 }

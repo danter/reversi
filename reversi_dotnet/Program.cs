@@ -7,8 +7,8 @@ namespace aspa.reversi
     {
         static void Main(string[] args)
         {
-            var board = new int[Constants.BoardMax + 1];
-            var hints = new int[Constants.BoardMax + 1];
+            var board = new char[Constants.BoardMax + 1];
+            var hints = new char[Constants.BoardMax + 1];
 
             HelperFunctions.InitGame(board);
             var config = ConfigHandler.ReadCommandLineArgumants(board, args);
@@ -45,7 +45,7 @@ namespace aspa.reversi
         }
 
 
-        private static void RunGameLoop(Config config, int[] board, int[] hints)
+        private static void RunGameLoop(Config config, char[] board, char[] hints)
         {
             var gameLogger = new GameLogger();
 

@@ -7,7 +7,7 @@ namespace aspa.reversi
     public class HelperFunctions
     {
 
-        public static void InitGame(IList<int> board)
+        public static void InitGame(IList<char> board)
         {
             for (var i = 0; i < board.Count; i++)
             {
@@ -20,7 +20,7 @@ namespace aspa.reversi
             board[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.Black;
         }
 
-        public static Pos ReadInput(Config config, int[] board, int[] hints)
+        public static Pos ReadInput(Config config, char[] board, char[] hints)
         {
             var cord = new Pos();
 
@@ -83,8 +83,29 @@ namespace aspa.reversi
             return cord;
         }
 
-        public static bool IsValidMove(int[] board, Pos readLine, int player)
+        public static bool IsValidMove(char[] board, Pos pos, char player)
         {
+            //char tval
+
+            if (pos.X < 0)
+                return false;
+            if (pos.X > Constants.Col - 1)
+                return false;
+            if (pos.Y < 0)
+                return false;
+            if (pos.Y > Constants.Row - 1)
+                return false;
+
+            if (board[pos.Y*Constants.Row+pos.X] != ' ' )
+            {
+                return false;
+            }
+
+            if (player == Constants.Black)
+            {
+                
+            }
+
             throw new NotImplementedException();
         }
 
@@ -107,7 +128,7 @@ namespace aspa.reversi
             }
         }
 
-        public static int CalcScore(int[] board, char player)
+        public static int CalcScore(char[] board, char player)
         {
             var score = 0;
 

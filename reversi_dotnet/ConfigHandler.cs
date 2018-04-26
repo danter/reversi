@@ -20,7 +20,7 @@ namespace aspa.reversi
             Console.WriteLine("-l <file>\tLoads the saved game <file>.\n");
         }
 
-        public static Config ReadCommandLineArgumants(int[] board, string[] arguments)
+        public static Config ReadCommandLineArgumants(char[] board, string[] arguments)
         {
             var config = new Config
             {
@@ -80,7 +80,7 @@ namespace aspa.reversi
         }
 
         // Todo: Verify the magic numbers 65 and 48 when it's UTF16
-        public static int LoadGame(int[] board, string saveFile)
+        public static char LoadGame(char[] board, string saveFile)
         {
             var logLine = "";
             if (File.Exists(saveFile))
