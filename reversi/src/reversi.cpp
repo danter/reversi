@@ -138,9 +138,8 @@ UINT loadGame(int board[], char file[], FILE *fp) {
 	int player = BLACK;
 	char cTmp;
 	sCord tmp;
-	FILE *fs;
 
-	fs = _fsopen(file, "r", _SH_DENYNO);
+	const auto fs = _fsopen(file, "r", _SH_DENYNO);
 	if (fs == NULL) {
 		return 0;
 	}
@@ -176,7 +175,6 @@ void drawPiece(int board[], sCord c, const char val) {
 
 // returns 1 if the move is valid, othervise it returns 0
 BOOL validMove(CINT board[], sCord c, const char val) {
-	int x,y;
 	char tval;
 
 	if(c.x<0 || c.x>COL-1 || c.y<0 || c.y>ROW-1) {
@@ -196,8 +194,8 @@ BOOL validMove(CINT board[], sCord c, const char val) {
 		exit(1);
 	}
 
-	for(y=c.y-1; y<=c.y+1; y++) {
-		for(x=c.x-1; x<=c.x+1; x++) {
+	for(auto y = c.y-1; y<=c.y+1; y++) {
+		for(auto x = c.x-1; x<=c.x+1; x++) {
 			if( insideBoard(x,y) ) {
 				if(board[y*ROW+x] == tval) {
 					if(traceMove(board, c, x-c.x, y-c.y, val)) {
@@ -214,7 +212,7 @@ BOOL validMove(CINT board[], sCord c, const char val) {
 
 // Checks the move and turns the pieces
 BOOL doMove(int board[], sCord c, const char val) {
-	int x, y, success=FALSE;
+	auto success=FALSE;
 	char tval;
 
 	if( board[c.y*ROW+c.x] != ' ') {
@@ -230,8 +228,8 @@ BOOL doMove(int board[], sCord c, const char val) {
 		exit(1);
 	}
 
-	for(y=c.y-1; y<=c.y+1; y++) {
-		for(x=c.x-1; x<=c.x+1; x++) {
+	for(auto y = c.y-1; y<=c.y+1; y++) {
+		for(auto x = c.x-1; x<=c.x+1; x++) {
 			if( insideBoard(x,y) ) {
 				if(board[y*ROW+x] == tval) {
 					if(traceMove(board, c, x-c.x, y-c.y, val)) {
