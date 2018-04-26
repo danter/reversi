@@ -171,33 +171,39 @@ void drawPiece(int board[], sCord c, const char val) {
 	board[c.y*ROW+c.x] = val;
 }
 
-
-// returns 1 if the move is valid, othervise it returns 0
-BOOL validMove(CINT board[], sCord c, const char player) {
-	char tval;
-
-	if(c.x<0 || c.x>COL-1 || c.y<0 || c.y>ROW-1) {
-		return 0;
-	}
-
-	if( board[c.y*ROW+c.x] != ' ') {
-		return FALSE;
-	}
-
-	if( player == BLACK )
-		tval = WHITE;
-	else if( player == WHITE)
-		tval = BLACK;
+char getOtherPlayer(char player)
+{
+	char otherplayer;
+	if (player == BLACK)
+		otherplayer = WHITE;
+	else if (player == WHITE)
+		otherplayer = BLACK;
 	else {
 		fprintf(stderr, "Unknown piece color in validMove(): exiting\n");
 		exit(1);
 	}
 
+	return otherplayer;
+}
+
+// returns 1 if the move is valid, othervise it returns 0
+BOOL validMove(CINT board[], sCord c, const char player) {
+
+	if(c.x<0 || c.x>COL-1 || c.y<0 || c.y>ROW-1) {
+		return FALSE;
+	}
+
+	if(board[c.y*ROW+c.x] != ' ') {
+		return FALSE;
+	}
+
+	const auto otherplayer = getOtherPlayer(player);
+
 	for(auto y = c.y-1; y<=c.y+1; y++) {
 		for(auto x = c.x-1; x<=c.x+1; x++) {
 			if (!insideBoard(x, y))
 				continue;
-			if (board[y*ROW + x] != tval)
+			if (board[y*ROW + x] != otherplayer)
 				continue;
 			if(traceMove(board, c, x-c.x, y-c.y, player))
 				return TRUE;
@@ -206,39 +212,28 @@ BOOL validMove(CINT board[], sCord c, const char player) {
 	return FALSE;
 }
 
-
 // Checks the move and turns the pieces
-BOOL doMove(int board[], sCord c, const char val) {
-	auto success=FALSE;
-	char tval;
-
-	if( board[c.y*ROW+c.x] != ' ') {
-		return FALSE;
+void doMove(int board[], sCord move, const char player) {
+	
+	if(board[move.y*ROW+move.x] != ' ') {
+		return;
 	}
 
-	if( val == BLACK )
-		tval = WHITE;
-	else if( val == WHITE)
-		tval = BLACK;
-	else {
-		fprintf(stderr, "Unknown piece color in doMove(): exiting\n");
-		exit(1);
-	}
+	const auto otherPlayer = getOtherPlayer(player);
 
-	for(auto y = c.y-1; y<=c.y+1; y++) {
-		for(auto x = c.x-1; x<=c.x+1; x++) {
-			if( insideBoard(x,y) ) {
-				if(board[y*ROW+x] == tval) {
-					if(traceMove(board, c, x-c.x, y-c.y, val)) {
-						if(doTraceMove(board, c, x-c.x, y-c.y, val)) {
-							success = TRUE;
-						}
-					}
-				}
+	for(auto y = move.y-1; y<=move.y+1; y++) {
+		for(auto x = move.x-1; x<=move.x+1; x++) {
+			if (!insideBoard(x, y))
+				continue;
+
+			if(board[y*ROW+x] != otherPlayer)
+				continue;
+
+			if(traceMove(board, move, x-move.x, y-move.y, player)) {
+				doTraceMove(board, move, x - move.x, y - move.y, player);
 			}
 		}
 	}
-	return success;
 }
 
 
@@ -246,28 +241,26 @@ BOOL doMove(int board[], sCord c, const char val) {
 // ie. if a marker of your own color is at the end of the row.
 // It takes the board, the current coordinate, the difference in x and y
 // and what value it should check for
-BOOL traceMove(CINT board[], sCord c, int dx, int dy, const char val) {
-	for(c.y+=dy, c.x+=dx; insideBoard(c.x,c.y); c.y+=dy, c.x+=dx) {
-		if(board[c.y*ROW+c.x] == val)
+BOOL traceMove(CINT board[], sCord move, int dx, int dy, const char player) {
+	for(move.y+=dy, move.x+=dx; insideBoard(move.x,move.y); move.y+=dy, move.x+=dx) {
+		if(board[move.y*ROW+move.x] == player)
 			return TRUE;
-		if(board[c.y*ROW+c.x] == ' ')
+		if(board[move.y*ROW+move.x] == ' ')
 			return FALSE;
 	}
 
 	return FALSE;
 }
 
-
 // Almost the same as traceMove(), exept this function actually performs the move
 // WARNING: traceMove() should be used before this or pieces that
 // should not be turned will get turned. 
-BOOL doTraceMove(int board[], sCord c, int dx, int dy, const char val) {
-	for(c.y+=dy, c.x+=dx; insideBoard(c.x,c.y); c.y+=dy, c.x+=dx) {
-		if(board[c.y*ROW+c.x] == val)
-			return TRUE;
-		board[c.y*ROW+c.x] = val;
+void doTraceMove(int board[], sCord move, int dx, int dy, const char player) {
+	for(move.y+=dy, move.x+=dx; insideBoard(move.x,move.y); move.y+=dy, move.x+=dx) {
+		if(board[move.y*ROW+move.x] == player)
+			return;
+		board[move.y*ROW+move.x] = player;
 	}
-	return FALSE;
 }
 
 

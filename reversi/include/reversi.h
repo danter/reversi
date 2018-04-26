@@ -60,38 +60,40 @@ void dispHelp(char argv[]);
 void drawBoard(CINT board[], CINT hints[]);
 
 /* Draws a piece to the board */
-void drawPiece(int board[], sCord c, const char val);
+void drawPiece(int board[], sCord c, char val);
 
 /* returns 1 if the move is a valid one, othervise it returns 0 */
-BOOL validMove(CINT board[], sCord c, const char val);
+BOOL validMove(CINT board[], sCord c, char val);
 
 /* Checks if the piece is inside the board */
 int insideBoard(int x, int y);
 
+/*Returns the color of the other player*/
+char getOtherPlayer(char player);
 
 /*	Checks if a row of markers can be captured,
 	ie. if a marker of your own color is at the end of the row.
 	It takes the board, the current coordinate, the difference in x and y
 	and what value it should check for */
-BOOL traceMove(CINT board[], sCord c, int dx, int dy, const char val);
+BOOL traceMove(CINT board[], sCord c, int dx, int dy, char player);
 
 
 /*	Checks the move and turns the pieces */
-BOOL doMove(int board[], sCord c, const char val);
+void doMove(int board[], sCord c, char player);
 
 /*	Turns the pieces in one direction
 	VARNING: traceMove() should be used before this or pieces that
 	should not be turned will get turned. */
-BOOL doTraceMove(int board[], sCord c, int dx, int dy, const char val);
+void doTraceMove(int board[], sCord c, int dx, int dy, char player);
 
 /* Tests if a player actually can do a move */
-BOOL testPlayer(CINT board[], const char val);
+BOOL testPlayer(CINT board[], char val);
 
 /* Creates hint data used by the drawBoard() and AI functions */
-void hintPlayer(CINT board[], int hints[], const char val);
+void hintPlayer(CINT board[], int hints[], char val);
 
 /* Calculates and returns the player score */
-int calcScore(CINT board[], const char val);
+int calcScore(CINT board[], char val);
 
 /*	Loads a saved game, returns the next player number, or negative value if failed
 	VARNING: does not suport boards bigger then 10x10 squares*/
@@ -103,13 +105,13 @@ UINT loadGame(int board[], char file[], FILE *fp);
 	would capture, and if the spot is a corner or not. It will return the
 	coordinates for the spot with the best score.
 */
-sCord AIEvalBoard(CINT board[], int score[], const char val);
+sCord AIEvalBoard(CINT board[], int score[], char val);
 
 /* Calculates a score depending on how good a square is to capture */
-int AIScoreCalc(CINT board[], sCord c, const char val);
+int AIScoreCalc(CINT board[], sCord c, char val);
 
 /* Calculates a score depending on how how much you capture on a square */
-int AITraceMove(CINT board[], sCord c, int dx, int dy, const char val);
+int AITraceMove(CINT board[], sCord c, int dx, int dy, char val);
 
 /* Creates an array with scores for hotspots like corners, sides etc etc*/
 void AIScoreTable(int score[]);
