@@ -18,7 +18,6 @@
 // capture that spot
 sCord AIEvalBoard(const int board[], int score[], const char val) {
 	int x,y, i;
-	UINT random;
 	int test[BOARD_MAX+1];
 	sCord c, tmp;
 
@@ -47,7 +46,7 @@ sCord AIEvalBoard(const int board[], int score[], const char val) {
 			if(score[y*ROW+x] > 0)
 				score[y*ROW+x] += test[y*ROW+x];
 
-	srand( (unsigned) time(NULL));
+	srand( static_cast<unsigned>(time(NULL)));
 
 	// Check max score, and randomise between equal scores
 	for(y=0, i=0; y<ROW; y++) {
@@ -58,7 +57,7 @@ sCord AIEvalBoard(const int board[], int score[], const char val) {
 				c.x = x;
 			}
 			else if ( score[y*ROW+x] == i){
-				random = rand() % 100;
+				const UINT random = rand() % 100;
 				if(random < 50) {
 					i = score[y*ROW+x];
 					c.y = y;
@@ -72,7 +71,7 @@ sCord AIEvalBoard(const int board[], int score[], const char val) {
 }
 
 int AIScoreCalc(const int board[], sCord c, const char val) {
-	int x, y, score=0;
+	int score=0;
 	char tval;
 
 	if( board[c.y*ROW+c.x] != ' ') {
@@ -88,8 +87,8 @@ int AIScoreCalc(const int board[], sCord c, const char val) {
 		exit(1);
 	}
 
-	for(y=c.y-1; y<=c.y+1; y++) {
-		for(x=c.x-1; x<=c.x+1; x++) {
+	for(auto y = c.y-1; y<=c.y+1; y++) {
+		for(auto x = c.x-1; x<=c.x+1; x++) {
 			if( insideBoard(x, y) ) {
 				if(board[y*ROW+x] == tval) {
 					if(traceMove(board, c, x-c.x, y-c.y, val)) {
