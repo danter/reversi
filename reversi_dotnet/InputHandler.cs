@@ -117,9 +117,9 @@ namespace aspa.reversi
         // and what value it should check for
         private static bool TraceMove(char[] board, Pos pos, int dx, int dy, char player)
         {
-            var tPos = pos;
+            var tPos = new Pos(pos);
 
-            for (tPos.Y += dy, tPos.X += dx; IsInsideBoard(tPos.X, tPos.Y); tPos.Y++, tPos.X++)
+            for (tPos.Y += dy, tPos.X += dx; IsInsideBoard(tPos.X, tPos.Y); tPos.X += dx, tPos.Y+=dy)
             {
                 var tracePos = tPos.Y * Constants.Row + tPos.X;
                 if (board[tracePos] == player)

@@ -2,6 +2,14 @@
 {
     public class Pos
     {
+        public Pos() { }
+
+        public Pos(Pos pos)
+        {
+            X = pos.X;
+            Y = pos.Y;
+        }
+
         private const int AsciiCharacterA = 65;
 
         public int X;
@@ -9,7 +17,7 @@
 
         public static int ConvertLetter(char character)
         {
-            return character - AsciiCharacterA;
+            return char.ToUpper(character) - AsciiCharacterA;
         }
 
         public static string ConvertPosToLetter(int pos)
