@@ -265,13 +265,13 @@ void doTraceMove(int board[], sCord move, int dx, int dy, const char player) {
 
 
 // Tests if a player actually can do a move 
-BOOL testPlayer(CINT board[], const char val) {
+BOOL testPlayer(CINT board[], const char player) {
 	int iTmp;
 	sCord c;
 
 	for(c.y=0, iTmp=0; c.y<ROW && iTmp == 0; c.y++) {
 		for(c.x=0; c.x<COL && iTmp == 0; c.x++) {
-			iTmp = validMove(board, c, val);
+			iTmp = validMove(board, c, player);
 		}
 	}
 	return iTmp;
