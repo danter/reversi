@@ -42,7 +42,7 @@ namespace aspa.reversi
                 {
                     Console.WriteLine("You can't place a piece there!\n");
 
-                    Console.WriteLine(config.Player == Constants.Black
+                    Console.Write(config.Player == Constants.Black
                         ? "BLACK, make your move: "
                         : "WHITE, make your move: ");
 
@@ -54,7 +54,7 @@ namespace aspa.reversi
             return move;
         }
 
-        private static char GetOtherPlayer(char player)
+        public static char GetOtherPlayer(char player)
         {
             var otherPlayer = '\0';
             switch (player)
@@ -222,6 +222,12 @@ namespace aspa.reversi
 
         public static Pos ReadMove(string input)
         {
+            if (input.Contains("X") || input.Contains("x"))
+            {
+                Console.WriteLine("\n Termination character X retrieved, ending game!");
+                Environment.Exit(0);
+            }
+
             var cord = new Pos();
 
             foreach (var character in input)

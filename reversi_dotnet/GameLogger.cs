@@ -17,7 +17,7 @@ namespace aspa.reversi
 
         public void WriteToGamelog(Pos move)
         {
-            File.AppendAllText(LogName, move.ToString());
+            File.AppendAllText(LogName, move + " ");
         }
     }
 }

@@ -28,7 +28,6 @@ namespace aspa.reversi
                     {
                         switch (hints[currentPos])
                         {
-                            case '\0':
                             case ' ':
                                 Console.Write(" │");
                                 break;

@@ -58,7 +58,7 @@ namespace aspa.reversi
                         continue;
                     case "-l":
                         var saveFile = arguments[++index];
-                        config.Player = LoadGame(board, saveFile);
+                        config.Player = LoadSaveGame(board, saveFile);
                         if (config.Player == 0)
                         {
                             Console.WriteLine("File load failed, exiting.\n");
@@ -79,8 +79,35 @@ namespace aspa.reversi
             return config;
         }
 
-        // Todo: Verify the magic numbers 65 and 48 when it's UTF16
-        public static char LoadGame(char[] board, string saveFile)
+        public static char LoadGameLog(char[] board, string gameLogLine)
+        {
+            var player = Constants.Black;
+            var coord = new Pos();
+
+            foreach (var character in gameLogLine)
+            {
+                if (char.IsLetter(character))
+                {
+                    coord.X = Pos.ConvertLetter(character);
+                }
+                else if (char.IsDigit(character))
+                {
+                    coord.Y = Pos.ConvertDigit(character);
+                }
+                else
+                {
+                    InputHandler.MakeMove(board, coord, player);
+                    InputHandler.PlacePiece(board, coord, player);
+
+                    player = player == Constants.Black ? Constants.White : Constants.Black;
+                }
+
+            }
+
+            return player;
+        }
+
+        public static char LoadSaveGame(char[] board, string saveFile)
         {
             var logLine = "";
             if (File.Exists(saveFile))
@@ -94,32 +121,7 @@ namespace aspa.reversi
                 Environment.Exit(1);
             }
 
-            var player = Constants.Black;
-
-            foreach (var character in logLine)
-            {
-                var coord = new Pos();
-
-                if (char.IsLetter(character))
-                {
-                    coord.X = character - 65;
-                }
-                else if (char.IsDigit(character))
-                {
-                    coord.Y = character - 48;
-                }
-                else
-                {
-                    // Todo: implement MakeMove and PlacePiece
-                    //MakeMove(board, coord, player);
-                    //PlacePiece(board, coord, player);
-
-                    player = player == Constants.Black ? Constants.White : Constants.Black;
-                }
-
-            }
-
-            return player;
+            return LoadGameLog(board, logLine);
         }
     }
 }

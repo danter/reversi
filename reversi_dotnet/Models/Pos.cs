@@ -10,7 +10,14 @@
             Y = pos.Y;
         }
 
+        public Pos(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
         private const int AsciiCharacterA = 65;
+        private const int AsciiCharacter1 = 48;
 
         public int X;
         public int Y;
@@ -18,6 +25,11 @@
         public static int ConvertLetter(char character)
         {
             return char.ToUpper(character) - AsciiCharacterA;
+        }
+
+        public static int ConvertDigit(char character)
+        {
+            return character - AsciiCharacter1;
         }
 
         public static string ConvertPosToLetter(int pos)
