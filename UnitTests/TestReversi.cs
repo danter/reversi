@@ -101,7 +101,6 @@ namespace UnitTests
             var actualResult = InputHandler.IsValidMove(board, move, currentPlayer);
 
             Assert.AreEqual(expectedMoveResult, actualResult);
-
         }
 
         [TestCase("E0", Constants.White, true)]
@@ -148,7 +147,6 @@ namespace UnitTests
             var actualResult = InputHandler.IsValidMove(board, move, currentPlayer);
 
             Assert.AreEqual(expectedMoveResult, actualResult);
-
         }
 
         [TestCase("G6", Constants.Black, new[]
