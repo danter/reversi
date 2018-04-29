@@ -10,11 +10,11 @@
     <Platform>x64</Platform>
   </PropertyGroup>
 
-  <Target Name="RestoreNuget">
-    <Exec Command="nuget restore &quot;$(SolutionFile)&quot;" />
+  <Target Name="RestorePackages">
+    <Exec Command="dotnet restore &quot;$(SolutionFile)&quot; /p:Platform=$(Platform)" />
   </Target>
 
-  <Target Name="Build" DependsOnTargets="RestoreNuget">
+  <Target Name="Build" DependsOnTargets="RestorePackages">
     <MSBuild Projects="$(SolutionFile)" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
   </Target>
 
