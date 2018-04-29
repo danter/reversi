@@ -1,0 +1,9 @@
+# Usage:
+# docker-compose build
+# docker-compose run app
+
+version: "3.2"
+services:
+  app:
+    build:
+      context: "."
