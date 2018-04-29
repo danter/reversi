@@ -1,7 +1,7 @@
 FROM microsoft/dotnet:2.1-sdk-alpine AS build
 WORKDIR /app
 
-# copy csproj and restore as distinct layers
+# NOTE: this is not very efficient, you should only copy the files needed for the build step and not all files or the cache invalidation will trigger too often.
 COPY . .
 RUN cd reversi_dotnet && dotnet build && dotnet publish -c Release -o /app/out
 
