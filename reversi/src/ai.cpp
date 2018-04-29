@@ -4,7 +4,6 @@
 // 2007-12-12
 
 #include <cstdio>
-#include <tchar.h>
 #include <cstdlib>
 #include <ctime>
 
