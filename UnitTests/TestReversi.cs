@@ -1,8 +1,7 @@
-using aspa.reversi;
 using aspa.reversi.Models;
 using NUnit.Framework;
 
-namespace UnitTests
+namespace aspa.reversi.UnitTests
 {
     [TestFixture]
     public class TestReversi
