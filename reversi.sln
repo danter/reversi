@@ -14,16 +14,26 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "reversi_dotnet", "reversi_d
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Debug|x64.ActiveCfg = Debug|x64
 		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Debug|x64.Build.0 = Debug|x64
+		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Release|x64.ActiveCfg = Release|x64
 		{0759F66E-7A03-410E-AA00-4C49E61D8D5E}.Release|x64.Build.0 = Release|x64
+		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Debug|x64.ActiveCfg = Debug|x64
 		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Debug|x64.Build.0 = Debug|x64
+		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Release|x64.ActiveCfg = Release|x64
 		{43FA322A-3397-4F9D-9FFC-F92628046F69}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
