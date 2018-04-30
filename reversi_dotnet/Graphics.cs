@@ -1,4 +1,5 @@
 ﻿using System;
+using aspa.reversi.Models;
 
 namespace aspa.reversi
 {
@@ -9,7 +10,7 @@ namespace aspa.reversi
             Console.WriteLine();
             Console.Write("   ");
             for (var i = 0; i < Constants.Col; i++)
-                Console.Write((char)(i + 65) + " ");
+                Console.Write(Pos.ConvertPosToLetter(i) + " ");
             Console.Write(" \n");
 
             Console.Write("  ┌");
@@ -60,7 +61,7 @@ namespace aspa.reversi
                 Console.Write("  ├");
                 for (var i = 0; i < Constants.Col - 1; i++)
                     Console.Write("─┼");
-                Console.Write("─│\n");
+                Console.Write("─┤\n");
             }
 
             Console.Write("  └");

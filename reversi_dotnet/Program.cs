@@ -8,46 +8,26 @@ namespace aspa.reversi
     {
         static void Main(string[] args)
         {
-            var board = new char[Constants.BoardMax];
-            var hints = new char[Constants.BoardMax];
+            var gameBoard = new char[Constants.BoardMax];
+            var hintBoard = new char[Constants.BoardMax];
 
-            InitBoard(board);
-            var config = ConfigHandler.ReadCommandLineArgumants(board, args);
+            InitBoard(gameBoard);
+            var config = ConfigHandler.ReadCommandLineArgumants(gameBoard, args);
+
+            config.Hints = BoardHints.Hints;
 
             // AIScoreTable(temp);
-            //DrawBoard(board, temp);
+            //DrawBoard(gameBoard, temp);
 
-            // Calculate Hints
-            switch (config.Hints)
-            {
-                // Todo: Implement HintPlayer and AIEvalBoard
-                case BoardHints.Hints:
-                    //HintPlayer(board, hints, config.Player);
-                    break;
-                case BoardHints.NumericHints:
-                    //AIEvalBoard(board, hints, config.Player)
-                    break;
-                default:
-                    for (var i = 0; i < Constants.BoardMax; i++)
-                    {
-                        hints[i] = ' ';
-                    }
+            RunGameLoop(config, gameBoard, hintBoard);
 
-                    break;
-            }
-
-            Graphics.DrawBoard(board, hints);
-            Console.WriteLine("BLACK score: " + CalculateScore(board, Constants.Black));
-            Console.WriteLine("WHITE score: " + CalculateScore(board, Constants.White));
-
-            RunGameLoop(config, board, hints);
-
-            PrintScore(board);
+            Graphics.DrawBoard(gameBoard, hintBoard);
+            PrintScore(gameBoard);
 
             Console.ReadKey();
         }
 
-        private static void RunGameLoop(Config config, char[] board, char[] hints)
+        private static void RunGameLoop(Config config, char[] gameBoard, char[] hintBoard)
         {
             var gameLogger = new GameLogger();
 
@@ -56,6 +36,12 @@ namespace aspa.reversi
 
             while (canBlackMove || canWhiteMove)
             {
+                CalculateHints(config.Hints, gameBoard, hintBoard, config.Player);
+                Graphics.DrawBoard(gameBoard, hintBoard);
+
+                Console.WriteLine("BLACK score: " + CalculateScore(gameBoard, Constants.Black));
+                Console.WriteLine("WHITE score: " + CalculateScore(gameBoard, Constants.White));
+
                 switch (config.Player)
                 {
                     case Constants.Black:
@@ -68,20 +54,20 @@ namespace aspa.reversi
                         return;
                 }
 
-                var move = InputHandler.ReadInput(config, board, hints);
+                var move = InputHandler.ReadInput(config, gameBoard, hintBoard);
 
                 gameLogger.WriteToGamelog(move);
-                InputHandler.MakeMove(board, move, config.Player);
-                InputHandler.PlacePiece(board, move, config.Player);
+                InputHandler.MakeMove(gameBoard, move, config.Player);
+                InputHandler.PlacePiece(gameBoard, move, config.Player);
 
                 // Change the current player
                 config.Player = InputHandler.GetOtherPlayer(config.Player);
 
                 // Test if players can move
-                canBlackMove = CanPlayerMove(board, Constants.Black);
-                canWhiteMove = CanPlayerMove(board, Constants.White);
+                canBlackMove = CanPlayerMove(gameBoard, Constants.Black);
+                canWhiteMove = CanPlayerMove(gameBoard, Constants.White);
 
-                // And change player if current player can't
+                // And change player if current player can't move
                 if (config.Player == Constants.Black && !canBlackMove)
                 {
                     Console.WriteLine("\nBLACK, can't make a move");
@@ -93,17 +79,13 @@ namespace aspa.reversi
                     Console.WriteLine("\nWHITE, can't make a move");
                     config.Player = Constants.Black;
                 }
-
-                CalculateHints(config, board, hints, config.Player);
-
-                Graphics.DrawBoard(board, hints);
             }
         }
 
-        private static void PrintScore(char[] board)
+        private static void PrintScore(char[] gameBoard)
         {
-            var blackScore = CalculateScore(board, Constants.Black);
-            var whiteScore = CalculateScore(board, Constants.White);
+            var blackScore = CalculateScore(gameBoard, Constants.Black);
+            var whiteScore = CalculateScore(gameBoard, Constants.White);
 
             Console.WriteLine("\nNeither BLACK nor WHITE can make a move, GAME OVER!");
             Console.WriteLine("The score was:");
@@ -123,27 +105,28 @@ namespace aspa.reversi
             }
         }
 
-        private static void CalculateHints(Config config, char[] board, char[] hints, char player)
+        private static void CalculateHints(BoardHints hints, char[] gameBoard, char[] hintBoard, char player)
         {
-            switch (config.Hints)
+            // Todo: Implement AIEvalBoard
+            switch (hints)
             {
                 case BoardHints.Hints:
-                    //HintPlayer(board, hints, player);
+                    InputHandler.HintPlayer(gameBoard, hintBoard, player);
                     break;
                 case BoardHints.NumericHints:
-                    //AIEvalBoard(board, hints, player);
+                    //AIEvalBoard(gameBoard, hintBoard, player);
                     break;
                 default:
-                    for (var i = 0; i < hints.Length; i++)
+                    for (var i = 0; i < hintBoard.Length; i++)
                     {
-                        hints[i] = ' ';
+                        hintBoard[i] = ' ';
                     }
 
                     break;
             }
         }
 
-        private static bool CanPlayerMove(char[] board, char player)
+        private static bool CanPlayerMove(char[] gameBoard, char player)
         {
             var playerCanMove = false;
 
@@ -151,33 +134,33 @@ namespace aspa.reversi
             {
                 for (var x = 0; x < Constants.Col && playerCanMove == false; x++)
                 {
-                    playerCanMove = InputHandler.IsValidMove(board, new Pos(x, y), player);
+                    playerCanMove = InputHandler.IsValidMove(gameBoard, new Pos(x, y), player);
                 }
             }
 
             return playerCanMove;
         }
 
-        public static void InitBoard(IList<char> board)
+        public static void InitBoard(IList<char> gameBoard)
         {
-            for (var i = 0; i < board.Count; i++)
+            for (var i = 0; i < gameBoard.Count; i++)
             {
-                board[i] = ' ';
+                gameBoard[i] = ' ';
             }
 
-            board[(Constants.Row / 2 - 1) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.White;
-            board[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2)] = Constants.White;
-            board[(Constants.Row / 2 - 1) * Constants.Row + (Constants.Col / 2)] = Constants.Black;
-            board[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.Black;
+            gameBoard[(Constants.Row / 2 - 1) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.White;
+            gameBoard[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2)] = Constants.White;
+            gameBoard[(Constants.Row / 2 - 1) * Constants.Row + (Constants.Col / 2)] = Constants.Black;
+            gameBoard[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.Black;
         }
 
-        public static int CalculateScore(char[] board, char player)
+        public static int CalculateScore(char[] gameBoard, char player)
         {
             var score = 0;
 
             for (var i = 0; i < Constants.BoardMax; i++)
             {
-                if (board[i] == player)
+                if (gameBoard[i] == player)
                 {
                     score++;
                 }

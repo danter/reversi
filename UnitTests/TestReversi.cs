@@ -8,6 +8,7 @@ namespace aspa.reversi.UnitTests
     {
         private const char B = Constants.Black;
         private const char W = Constants.White;
+        private const char H = Constants.Hint;
 
         [TestCase("A5", 0, 5)]
         [TestCase("E2", 4, 2)]
@@ -100,6 +101,130 @@ namespace aspa.reversi.UnitTests
             var actualResult = InputHandler.IsValidMove(board, move, currentPlayer);
 
             Assert.AreEqual(expectedMoveResult, actualResult);
+        }
+
+        [TestCase(Constants.Black, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 2
+            ' ',' ',' ', W , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ',' ', H ,' ',' ',' ',' ', // 2
+            ' ',' ', H ,' ',' ',' ',' ',' ', // 3
+            ' ',' ',' ',' ',' ', H ,' ',' ', // 4
+            ' ',' ',' ',' ', H ,' ',' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase(Constants.White, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ',' ', B ,' ',' ',' ',' ', // 2
+            ' ',' ',' ', B , B ,' ',' ',' ', // 3
+            ' ',' ',' ', B , W ,' ',' ',' ', // 4
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ', H ,' ', H ,' ',' ',' ', // 2
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 3
+            ' ',' ', H ,' ',' ',' ',' ',' ', // 4
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase(Constants.Black, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ',' ', B ,' ',' ',' ',' ', // 2
+            ' ',' ',' ', B , B ,' ',' ',' ', // 3
+            ' ',' ', W , W , W ,' ',' ',' ', // 4
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 2
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 3
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 4
+            ' ', H , H , H , H , H ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase(Constants.White, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ',' ', B ,' ',' ',' ',' ', // 2
+            ' ',' ',' ', B , B ,' ',' ',' ', // 3
+            ' ',' ', W , W , B ,' ',' ',' ', // 4
+            ' ',' ',' ',' ', B ,' ',' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ', H ,' ',' ',' ',' ', // 1
+            ' ',' ',' ',' ', H , H ,' ',' ', // 2
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 3
+            ' ',' ',' ',' ',' ', H ,' ',' ', // 4
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 5
+            ' ',' ',' ',' ',' ', H ,' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        [TestCase(Constants.White, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+            ' ',' ', B , B , B , B ,' ',' ', // 2
+            ' ',' ', B , W , W , B ,' ',' ', // 3
+            ' ',' ', B , W , W , B ,' ',' ', // 4
+            ' ',' ', B , B , B , B ,' ',' ', // 5
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        }, new[]
+        {
+          // A   B   C   D   E   F   G   H
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+            ' ', H , H , H , H , H , H ,' ', // 1
+            ' ', H ,' ',' ',' ',' ', H ,' ', // 2
+            ' ', H ,' ',' ',' ',' ', H ,' ', // 3
+            ' ', H ,' ',' ',' ',' ', H ,' ', // 4
+            ' ', H ,' ',' ',' ',' ', H ,' ', // 5
+            ' ', H , H , H , H , H , H ,' ', // 6
+            ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+        })]
+        public void HintPlayer_DrawHintsInHintBoard_ExpectCorrectHintsAreDrawn(char currentPlayer, char[] startBoard, char[] expectedHintBoard)
+        {
+            var actualHintBoard = new char[Constants.BoardMax];
+
+            InputHandler.HintPlayer(startBoard, actualHintBoard, currentPlayer);
+
+            Assert.AreEqual(expectedHintBoard, actualHintBoard);
         }
 
         [TestCase("E0", Constants.White, true)]
@@ -350,12 +475,12 @@ namespace aspa.reversi.UnitTests
              W , W , W , W , W , B , B , B , // 6
              W , B , B , B , B , B , B , B , // 7
         })]
-        public void LoadGame_LoadGameLogFile_CorrectBoardAndCurrentPlayerIsRetrieved(string gameLog, char expectedCurrentPlayer, char[] expectedGameBoard)
+        public void LoadSaveGame_LoadGameLogFile_CorrectBoardAndCurrentPlayerIsRetrieved(string gameLog, char expectedCurrentPlayer, char[] expectedGameBoard)
         {
             var board = new char[Constants.BoardMax];
             Program.InitBoard(board);
 
-            var actualCurrentPlayer = ConfigHandler.LoadGameLog(board, gameLog);
+            var actualCurrentPlayer = ConfigHandler.LoadSaveGame(board, gameLog);
             var actualGameBoard = new string(board);
 
             Assert.AreEqual(expectedCurrentPlayer, actualCurrentPlayer);

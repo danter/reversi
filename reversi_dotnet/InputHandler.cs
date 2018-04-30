@@ -24,21 +24,21 @@ namespace aspa.reversi
             }
         }
 
-        public static Pos ReadInput(Config config, char[] board, char[] hints)
+        public static Pos ReadInput(Config config, char[] gameBoard, char[] hintBoard)
         {
             var move = new Pos();
 
             // Todo: Implement AIEvalBoard
             if (IsAiPlayerTurn(config))
             {
-                //move = AIEvalBoard(board, hints, config.Player);
+                //move = AIEvalBoard(gameBoard, hintBoard, config.Player);
                 //fprintf(stdout, "%c%d\n", move.x + 65, move.y);
             }
             else
             {
                 var input = ReadInput();
                 move = ReadMove(input);
-                while (!IsValidMove(board, move, config.Player))
+                while (!IsValidMove(gameBoard, move, config.Player))
                 {
                     Console.WriteLine("You can't place a piece there!\n");
 
@@ -74,39 +74,33 @@ namespace aspa.reversi
             return otherPlayer;
         }
 
-        public static bool IsValidMove(char[] board, Pos pos, char player)
+        public static bool IsValidMove(char[] gameBoard, Pos pos, char player)
         {
-            if (pos.X < 0)
-                return false;
-            if (pos.X > Constants.Col - 1)
-                return false;
-            if (pos.Y < 0)
-                return false;
-            if (pos.Y > Constants.Row - 1)
+            if (!IsInsideBoard(pos))
                 return false;
 
-            if (board[pos.Y * Constants.Row + pos.X] != ' ')
+            if (gameBoard[pos.Y * Constants.Row + pos.X] != ' ')
             {
                 return false;
             }
 
             var otherPlayer = GetOtherPlayer(player);
 
-            for (var y = 0; y <= pos.Y + 1; y++)
+            for (var y = pos.Y-1; y <= pos.Y + 1; y++)
             {
-                for (var x = 0; x <= pos.X + 1; x++)
+                for (var x = pos.X-1; x <= pos.X + 1; x++)
                 {
                     if (!IsInsideBoard(x, y))
                     {
                         continue;
                     }
 
-                    if (board[y * Constants.Row + x] != otherPlayer)
+                    if (gameBoard[y * Constants.Row + x] != otherPlayer)
                     {
                         continue;
                     }
 
-                    if (TraceMove(board, pos, x - pos.X, y - pos.Y, player))
+                    if (TraceMove(gameBoard, pos, x - pos.X, y - pos.Y, player))
                     {
                         return true;
                     }
@@ -116,15 +110,15 @@ namespace aspa.reversi
             return false;
         }
 
-        public static void PlacePiece(char[] board, Pos move, char currentPlayer)
+        public static void PlacePiece(char[] gameBoard, Pos move, char currentPlayer)
         {
-            board[move.Y * Constants.Row + move.X] = currentPlayer;
+            gameBoard[move.Y * Constants.Row + move.X] = currentPlayer;
         }
 
         // Validates the move and turns the pieces
-        public static void MakeMove(char[] board, Pos move, char player)
+        public static void MakeMove(char[] gameBoard, Pos move, char player)
         {
-            if (board[move.Y * Constants.Row + move.X] != ' ')
+            if (gameBoard[move.Y * Constants.Row + move.X] != ' ')
             {
                 return;
             }
@@ -140,14 +134,14 @@ namespace aspa.reversi
                         continue;
                     }
 
-                    if (board[y * Constants.Row + x] != otherPlayer)
+                    if (gameBoard[y * Constants.Row + x] != otherPlayer)
                     {
                         continue;
                     }
 
-                    if (TraceMove(board, move, x-move.X, y-move.Y, player))
+                    if (TraceMove(gameBoard, move, x-move.X, y-move.Y, player))
                     {
-                        DoTraceMove(board, move, x-move.X, y-move.Y, player);
+                        DoTraceMove(gameBoard, move, x-move.X, y-move.Y, player);
                     }
                 }
             }
@@ -155,20 +149,20 @@ namespace aspa.reversi
 
         // Checks if a row of markers can be captured,
         // ie. if a marker of your own color is at the end of the row.
-        // It takes the board, the current coordinate, the difference in x and y
+        // It takes the gameBoard, the current coordinate, the difference in x and y
         // and what value it should check for
-        private static bool TraceMove(char[] board, Pos move, int dx, int dy, char player)
+        private static bool TraceMove(char[] gameBoard, Pos move, int dx, int dy, char player)
         {
             var tMove = new Pos(move);
 
-            for (tMove.Y += dy, tMove.X += dx; IsInsideBoard(tMove.X, tMove.Y); tMove.X += dx, tMove.Y+=dy)
+            for (tMove.Y += dy, tMove.X += dx; IsInsideBoard(tMove); tMove.X += dx, tMove.Y+=dy)
             {
                 var tracePos = tMove.Y * Constants.Row + tMove.X;
-                if (board[tracePos] == player)
+                if (gameBoard[tracePos] == player)
                 {
                     return true;
                 }
-                if (board[tracePos] == ' ')
+                if (gameBoard[tracePos] == ' ')
                 {
                     return false;
                 }
@@ -184,7 +178,7 @@ namespace aspa.reversi
         {
             var tMove = new Pos(move);
 
-            for (tMove.X+=dx, tMove.Y+=dy; IsInsideBoard(tMove.X, tMove.Y); tMove.X+=dx, tMove.Y += dy)
+            for (tMove.X+=dx, tMove.Y+=dy; IsInsideBoard(tMove); tMove.X+=dx, tMove.Y += dy)
             {
                 if (board[tMove.Y*Constants.Row+tMove.X] == player)
                 {
@@ -195,18 +189,26 @@ namespace aspa.reversi
             }
         }
 
+        private static bool IsInsideBoard(Pos pos)
+        {
+            return IsInsideBoard(pos.X, pos.Y);
+        }
+
         private static bool IsInsideBoard(int x, int y)
         {
-            if (y >= Constants.Row)
-                return false;
-
-            if (y < 0)
+            if (x < 0)
                 return false;
 
             if (x >= Constants.Col)
                 return false;
 
-            return x >= 0;
+            if (y < 0)
+                return false;
+
+            if (y >= Constants.Row)
+                return false;
+
+            return true;
         }
 
         public static string ReadInput()
@@ -247,5 +249,24 @@ namespace aspa.reversi
             return cord;
         }
 
+        public static void HintPlayer(char[] gameBoard, char[] hints, char player)
+        {
+            for (var y = 0; y < Constants.Row; y++)
+            {
+                for (var x = 0; x < Constants.Col; x++)
+                {
+                    var currentPos = y * Constants.Row + x;
+
+                    if (IsValidMove(gameBoard, new Pos(x, y), player))
+                    {
+                        hints[currentPos] = Constants.Hint;
+                    }
+                    else
+                    {
+                        hints[currentPos] = ' ';
+                    }
+                }
+            }
+        }
     }
 }
