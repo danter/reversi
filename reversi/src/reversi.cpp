@@ -276,16 +276,16 @@ BOOL testPlayer(CINT board[], const char player) {
 	return iTmp;
 }
 
-void hintPlayer(CINT board[], int hints[], const char val) {
+void hintPlayer(CINT board[], int hints[], const char player) {
 	int iTmp;
 	sCord c;
 
-	for(iTmp=0; iTmp<BOARD_MAX; iTmp++)
-		hints[iTmp] = ' ';
+	for(auto i=0; i<BOARD_MAX; i++)
+		hints[i] = ' ';
 
 	for(c.y=0, iTmp=0; c.y<ROW; c.y++) {
 		for(c.x=0; c.x<COL; c.x++) {
-			iTmp = validMove(board, c, val);
+			iTmp = validMove(board, c, player);
 			if(iTmp == 1)
 				hints[c.y*ROW+c.x] = HINT;
 		}
