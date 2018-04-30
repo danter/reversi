@@ -2,13 +2,19 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net471;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>net461;net471;netcoreapp2.0</TargetFrameworks>
     <RootNamespace>aspa.reversi.UnitTests</RootNamespace>
     <AssemblyName>reversi.tests</AssemblyName>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon />
     <StartupObject />
   </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
+    <Reference Include="System.Collections.Concurrent" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
     <Reference Include="System.Collections.Concurrent" />
