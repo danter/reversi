@@ -3,8 +3,9 @@
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <SolutionDir>$(MSBuildProjectDirectory)\..</SolutionDir>
-    <SolutionFile>$(SolutionDir)\reversi.sln</SolutionFile>
+    <BaseDir>$(MSBuildProjectDirectory)\..</BaseDir>
+    <SolutionFile>$(BaseDir)\reversi.sln</SolutionFile>
+    <CSolutionFile>$(BaseDir)\reversi\reversi.sln</CSolutionFile>
     <Configuration>Release</Configuration>
     <TargetFramework>net471</TargetFramework>
     <Platform>Any CPU</Platform>
@@ -15,23 +16,17 @@
   </Target>
 
   <Target Name="Build">
-	<Exec Command="dotnet build &quot;$(SolutionFile)&quot; /p:Configuration=$(Configuration);TargetFramework=$(TargetFramework);Platform=&quot;$(Platform)&quot;" />
+    <Exec Command="dotnet build &quot;$(SolutionFile)&quot; /p:Configuration=$(Configuration);TargetFramework=$(TargetFramework);Platform=&quot;$(Platform)&quot;" />
+    <MSBuild Projects="$(CSolutionFile)" Targets="Build" Properties="Configuration=$(Configuration);Platform=x64" />
   </Target>
-  
-  <!-- <Target Name="Build" DependsOnTargets="RestorePackages"> -->
-    <!-- <MSBuild Projects="$(SolutionFile)" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);Platform=$(Platform)" /> -->
-  <!-- </Target> -->
 
   <Target Name="Clean">
-	<Exec Command="dotnet clean &quot;$(SolutionFile)&quot; /p:Platform=&quot;$(Platform)&quot;" />
+    <Exec Command="dotnet clean &quot;$(SolutionFile)&quot; /p:Platform=&quot;$(Platform)&quot;" />
+    <MSBuild Projects="$(CSolutionFile)" Targets="Clean" Properties="Configuration=$(Configuration);Platform=x64" />
   </Target>
 
-  <!-- <Target Name="Clean"> -->
-    <!-- <MSBuild Projects="$(SolutionFile)" Targets="Clean" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);Platform=$(Platform)" /> -->
-  <!-- </Target> -->
-  
   <Target Name="UnitTest">
-    <Exec Command="nunit3-console --result=TestResult_$(Configuration).xml $(SolutionDir)\UnitTests\bin\$(Configuration)\$(TargetFramework)\reversi.tests.dll" />
+    <Exec Command="nunit3-console --result=TestResult_$(Configuration).xml $(BaseDir)\UnitTests\bin\$(Configuration)\$(TargetFramework)\reversi.tests.dll" />
   </Target>
 
   <Target Name="All" DependsOnTargets="Clean; Build; UnitTest" />
