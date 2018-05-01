@@ -15,22 +15,24 @@
 // would capture, and if the spot is a corner or not. It will return the
 // coordinates for the spot with the best score, it can then be used to
 // capture that spot
-sCord AIEvalBoard(const int board[], int score[], const char val) {
-	int x,y, i;
+sCord AIEvalBoard(const int board[], int score[], const char player) {
 	int test[BOARD_MAX+1];
-	sCord c, tmp;
+	sCord move;
+	move.x = 0;
+	move.y = 0;
 
-	for(x=0; x<BOARD_MAX; x++)
+	for(auto x=0; x<BOARD_MAX; x++)
 		test[x] = 0;
 
-	hintPlayer(board, test, val);
+	hintPlayer(board, test, player);
 
-	for(y=0; y<ROW; y++) {
-		for(x=0; x<COL; x++) {
+	for(auto y=0; y<ROW; y++) {
+		for(auto x=0; x<COL; x++) {
 			if(test[y*ROW+x] == HINT) {
+				sCord tmp;
 				tmp.y = y;
 				tmp.x = x;
-				score[y*ROW+x] = AIScoreCalc(board, tmp, val);
+				score[y*ROW+x] = AIScoreCalc(board, tmp, player);
 			}
 			else
 				score[y*ROW+x] = 0;
@@ -40,73 +42,66 @@ sCord AIEvalBoard(const int board[], int score[], const char val) {
 	// Add score for hotspots like corners 
 	AIScoreTable(test);
 
-	for(y=0; y<ROW; y++)
-		for(x=0; x<COL; x++)
+	for(auto y=0; y<ROW; y++)
+		for(auto x=0; x<COL; x++)
 			if(score[y*ROW+x] > 0)
 				score[y*ROW+x] += test[y*ROW+x];
 
 	srand( static_cast<unsigned>(time(NULL)));
 
 	// Check max score, and randomise between equal scores
-	for(y=0, i=0; y<ROW; y++) {
-		for(x=0; x<COL; x++) {
+	for(auto y=0, i=0; y<ROW; y++) {
+		for(auto x=0; x<COL; x++) {
 			if(score[y*ROW+x] > i) {
 				i = score[y*ROW+x];
-				c.y = y;
-				c.x = x;
+				move.y = y;
+				move.x = x;
 			}
 			else if ( score[y*ROW+x] == i){
 				const UINT random = rand() % 100;
 				if(random < 50) {
 					i = score[y*ROW+x];
-					c.y = y;
-					c.x = x;
+					move.y = y;
+					move.x = x;
 				}
 			}
 		}
 	}
 
-	return c;
+	return move;
 }
 
-int AIScoreCalc(const int board[], sCord c, const char val) {
-	int score=0;
-	char tval;
+int AIScoreCalc(const int board[], sCord c, const char player) {
+	auto score=0;
 
 	if( board[c.y*ROW+c.x] != ' ') {
 		return 0;
 	}
 
-	if( val == BLACK )
-		tval = WHITE;
-	else if( val == WHITE)
-		tval = BLACK;
-	else {
-		fprintf(stderr, "Unknown piece color in doMove(): exiting\n");
-		exit(1);
-	}
+	const auto otherPlayer = getOtherPlayer(player);
 
 	for(auto y = c.y-1; y<=c.y+1; y++) {
 		for(auto x = c.x-1; x<=c.x+1; x++) {
-			if( insideBoard(x, y) ) {
-				if(board[y*ROW+x] == tval) {
-					if(traceMove(board, c, x-c.x, y-c.y, val)) {
-						score += AITraceMove(board, c, x-c.x, y-c.y, val);
-					}
-				}
+			if (!insideBoard(x, y))
+				continue;
+
+			if(board[y*ROW+x] != otherPlayer)
+				continue;
+
+			if (traceMove(board, c, x - c.x, y - c.y, player)) {
+				score += AITraceMove(board, c, x - c.x, y - c.y, player);
 			}
 		}
 	}
 	return score;
 }
 
-int AITraceMove(const int board[], sCord c, int dx, int dy, const char val) {
-	int tmp=0;
+int AITraceMove(const int board[], sCord c, const int dx, const int dy, const char player) {
+	auto tmp=0;
 	for(c.y+=dy, c.x+=dx; insideBoard(c.x, c.y); c.y+=dy, c.x+=dx) {
-		if(board[c.y*ROW+c.x] == val)
+		if(board[c.y*ROW+c.x] == player)
 			return tmp;
-		else
-			tmp++;
+		tmp++;
 	}
 	return tmp;
 }
@@ -140,7 +135,7 @@ void AIScoreTable(int score[]) {
 	score[(ROW-1)*ROW+(COL-1)]++;
 	score[(ROW-1)*ROW+0]++;
 
-	// Preparation for bad zones 
+	// Preparation for bad zones
 	for(y=0; y<ROW; y++)
 		for(x=0; x<COL; x++)
 			score[y*ROW+x]+=2;
