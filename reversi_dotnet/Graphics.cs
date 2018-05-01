@@ -5,22 +5,23 @@ namespace aspa.reversi
 {
     public class Graphics
     {
-        public static void DrawBoard(char[] board, char[] hints)
+        public static string RenderToString(char[] board, char[] hints)
         {
-            Console.WriteLine();
-            Console.Write("   ");
-            for (var i = 0; i < Constants.Col; i++)
-                Console.Write(Pos.ConvertPosToLetter(i) + " ");
-            Console.Write(" \n");
+            var drawstring = "";
 
-            Console.Write("  ┌");
+            drawstring += "   ";
+            for (var i = 0; i < Constants.Col; i++)
+                drawstring += Pos.ConvertPosToLetter(i) + " ";
+            drawstring += "\n";
+
+            drawstring += "  ┌";
             for (var i = 0; i < Constants.Col - 1; i++)
-                Console.Write("─┬");
-            Console.Write("─┐\n");
+                drawstring += "─┬";
+            drawstring += "─┐\n";
 
             for (var y = 0; y < Constants.Row; y++)
             {
-                Console.Write(" " + y + "│");
+                drawstring += " " + y + "│";
                 for (var x = 0; x < Constants.Col; x++)
                 {
                     var currentPos = y * Constants.Row + x;
@@ -30,44 +31,79 @@ namespace aspa.reversi
                         switch (hints[currentPos])
                         {
                             case ' ':
-                                Console.Write(" │");
+                                drawstring += " │";
                                 break;
                             case Constants.Hint:
-                                Console.Write(Constants.Hint + "│");
+                                drawstring += Constants.Hint + "│";
                                 break;
                             default:
-                                if (hints[currentPos] < 0)
-                                {
-                                    Console.Write(hints[currentPos] + "│");
-                                }
+                                drawstring += hints[currentPos] + "│";
 
                                 break;
                         }
                     }
                     else
                     {
-                        Console.Write(board[currentPos] + "│");
+                        drawstring += board[currentPos] + "│";
                     }
 
                 }
 
-                Console.WriteLine();
+                drawstring += "\n";
 
                 if (y >= Constants.Row - 1)
                 {
                     continue;
                 }
 
-                Console.Write("  ├");
+                drawstring += "  ├";
                 for (var i = 0; i < Constants.Col - 1; i++)
-                    Console.Write("─┼");
-                Console.Write("─┤\n");
+                    drawstring += "─┼";
+                drawstring += "─┤\n";
             }
 
-            Console.Write("  └");
+            drawstring += "  └";
             for (var i = 0; i < Constants.Col - 1; i++)
-                Console.Write("─┴");
-            Console.WriteLine("─┘\n");
+                drawstring += "─┴";
+            drawstring += "─┘\n";
+
+            return drawstring;
         }
+
+        public static void PrintScore(char[] gameBoard)
+        {
+            Console.WriteLine("BLACK score: " + InputHandler.CalculateScore(gameBoard, Constants.Black));
+            Console.WriteLine("WHITE score: " + InputHandler.CalculateScore(gameBoard, Constants.White));
+        }
+
+        public static void PrintFinalScore(char[] gameBoard)
+        {
+            var blackScore = InputHandler.CalculateScore(gameBoard, Constants.Black);
+            var whiteScore = InputHandler.CalculateScore(gameBoard, Constants.White);
+
+            Console.WriteLine("\nNeither BLACK nor WHITE can make a move, GAME OVER!");
+            Console.WriteLine("The score was:");
+            Console.WriteLine("BLACK: " + blackScore);
+            Console.WriteLine("WHITE: " + whiteScore);
+
+            if (blackScore == whiteScore)
+            {
+                Console.WriteLine("The game was a draw!");
+            }
+            else if (whiteScore < blackScore)
+            {
+                Console.WriteLine("Winner is BLACK!");
+            }
+            else
+            {
+                Console.WriteLine("Winner is WHITE!");
+            }
+        }
+
+        public static void DrawBoard(char[] board, char[] hints)
+        {
+            Console.WriteLine(RenderToString(board, hints));
+        }
+
     }
 }

@@ -32,7 +32,7 @@ namespace aspa.reversi
             for (var index = 0; index < arguments.Length; index++)
             {
                 var argument = arguments[index];
-                if (argument.Contains("-h"))
+                if (argument.Equals("-h"))
                 {
                     DisplayHelp();
                     Environment.Exit(0);
@@ -40,6 +40,8 @@ namespace aspa.reversi
 
                 switch (argument)
                 {
+                    case "":
+                        continue;
                     case "-ai":
                     case "-ai1":
                         config.Ai = AiPlayer.WhiteAi;
@@ -92,7 +94,7 @@ namespace aspa.reversi
                 }
                 else if (char.IsDigit(character))
                 {
-                    coord.Y = Pos.ConvertDigit(character);
+                    coord.Y = Pos.ConvertFromAsciiDigit(character);
                 }
                 else
                 {

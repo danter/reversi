@@ -1,4 +1,4 @@
-using aspa.reversi.Models;
+﻿using aspa.reversi.Models;
 using NUnit.Framework;
 
 namespace aspa.reversi.UnitTests
@@ -9,6 +9,29 @@ namespace aspa.reversi.UnitTests
         private const char B = Constants.Black;
         private const char W = Constants.White;
         private const char H = Constants.Hint;
+
+        [TestCase(new[] { "" }, AiPlayer.NoAi, BoardHints.NoHints, Constants.Black)]
+        [TestCase(new[] { "-ai" }, AiPlayer.WhiteAi, BoardHints.NoHints, Constants.Black)]
+        [TestCase(new[] { "-ai1" }, AiPlayer.WhiteAi, BoardHints.NoHints, Constants.Black)]
+        [TestCase(new[] { "-ai2" }, AiPlayer.BlackAi, BoardHints.NoHints, Constants.Black)]
+        [TestCase(new[] { "-ai3" }, AiPlayer.BothAi, BoardHints.NoHints, Constants.Black)]
+        [TestCase(new[] { "-ht" }, AiPlayer.NoAi, BoardHints.Hints, Constants.Black)]
+        [TestCase(new[] { "-hn" }, AiPlayer.NoAi, BoardHints.NumericHints, Constants.Black)]
+        [TestCase(new[] { "-ai3", "-hn" }, AiPlayer.BothAi, BoardHints.NumericHints, Constants.Black)]
+        public void ConfigHandler_ReadCommandLine_CorrectParametersAreReturned(string[] commandLine, AiPlayer expectedAiConfig, BoardHints expectedHintConfig, char expectedPlayerConfig)
+        {
+            var emptyBoard = new char[Constants.BoardMax];
+            var expectedConfig = new Config
+            {
+                Ai = expectedAiConfig,
+                Hints = expectedHintConfig,
+                Player = expectedPlayerConfig,
+            };
+
+            var actualConfig = ConfigHandler.ReadCommandLineArgumants(emptyBoard, commandLine);
+
+            Assert.AreEqual(expectedConfig, actualConfig);
+        }
 
         [TestCase("A5", 0, 5)]
         [TestCase("E2", 4, 2)]
@@ -84,8 +107,7 @@ namespace aspa.reversi.UnitTests
         public void IsValidMove_CheckIfSimpleMoveIsValid_ExpectCorrectBehaviourFromProvidedMoveResult(string moveInput, char currentPlayer, bool expectedMoveResult )
         {
             var move = InputHandler.ReadMove(moveInput);
-
-            var board = new[]
+            var gameBoard = new[]
             {
               // A   B   C   D   E   F   G   H
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -98,7 +120,7 @@ namespace aspa.reversi.UnitTests
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 7
             };
 
-            var actualResult = InputHandler.IsValidMove(board, move, currentPlayer);
+            var actualResult = InputHandler.IsValidMove(gameBoard, move, currentPlayer);
 
             Assert.AreEqual(expectedMoveResult, actualResult);
         }
@@ -255,7 +277,7 @@ namespace aspa.reversi.UnitTests
         {
             var move = InputHandler.ReadMove(moveInput);
 
-            var board = new[]
+            var gameBoard = new[]
             {
               // A   B   C   D   E   F   G   H
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -268,7 +290,7 @@ namespace aspa.reversi.UnitTests
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 7
             };
 
-            var actualResult = InputHandler.IsValidMove(board, move, currentPlayer);
+            var actualResult = InputHandler.IsValidMove(gameBoard, move, currentPlayer);
 
             Assert.AreEqual(expectedMoveResult, actualResult);
         }
@@ -477,14 +499,104 @@ namespace aspa.reversi.UnitTests
         })]
         public void LoadSaveGame_LoadGameLogFile_CorrectBoardAndCurrentPlayerIsRetrieved(string gameLog, char expectedCurrentPlayer, char[] expectedGameBoard)
         {
-            var board = new char[Constants.BoardMax];
-            Program.InitBoard(board);
+            var gameBoard = new char[Constants.BoardMax];
+            InputHandler.InitBoard(gameBoard);
 
-            var actualCurrentPlayer = ConfigHandler.LoadSaveGame(board, gameLog);
-            var actualGameBoard = new string(board);
+            var actualCurrentPlayer = ConfigHandler.LoadSaveGame(gameBoard, gameLog);
+            var actualGameBoard = new string(gameBoard);
 
             Assert.AreEqual(expectedCurrentPlayer, actualCurrentPlayer);
             Assert.AreEqual(expectedGameBoard, actualGameBoard);
+        }
+
+        [Test]
+        public void RenderToString_DrawInitialBoardWithHints_ExpectedStringForDrawingIsReturned()
+        {
+            var expectedRenderString =
+                "   A B C D E F G H \n" +
+                "  ┌─┬─┬─┬─┬─┬─┬─┬─┐\n" +
+                " 0│ │ │ │ │ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 1│ │ │ │ │ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 2│ │ │ │+│ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 3│ │ │+│█│░│ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 4│ │ │ │░│█│+│ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 5│ │ │ │ │+│ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 6│ │ │ │ │ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 7│ │ │ │ │ │ │ │ │\n" +
+                "  └─┴─┴─┴─┴─┴─┴─┴─┘\n";
+
+            var player = Constants.Black;
+            var scoreBoard = new char[Constants.BoardMax];
+            var gameBoard = new[]
+            {
+                // A   B   C   D   E   F   G   H
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
+                ' ',' ',' ', W , B ,' ',' ',' ', // 3
+                ' ',' ',' ', B , W ,' ',' ',' ', // 4
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+            };
+
+            InputHandler.HintPlayer(gameBoard, scoreBoard, player);
+
+            var actualDrawString = Graphics.RenderToString(gameBoard, scoreBoard);
+
+            Assert.AreEqual(expectedRenderString, actualDrawString);
+        }
+
+        [Test]
+        public void RenderToString_DrawInitialBoardWithNumericHints_ExpectedStringForDrawingIsReturned()
+        {
+            var expectedRenderString =
+                "   A B C D E F G H \n" +
+                "  ┌─┬─┬─┬─┬─┬─┬─┬─┐\n" +
+                " 0│ │ │ │ │ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 1│ │ │ │ │ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 2│ │ │ │3│ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 3│ │ │3│█│░│ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 4│ │ │ │░│█│3│ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 5│ │ │ │ │3│ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 6│ │ │ │ │ │ │ │ │\n" +
+                "  ├─┼─┼─┼─┼─┼─┼─┼─┤\n" +
+                " 7│ │ │ │ │ │ │ │ │\n" +
+                "  └─┴─┴─┴─┴─┴─┴─┴─┘\n";
+
+            var player = Constants.Black;
+            var scoreBoard = new char[Constants.BoardMax];
+            var gameBoard = new[]
+            {
+                // A   B   C   D   E   F   G   H
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
+                ' ',' ',' ', W , B ,' ',' ',' ', // 3
+                ' ',' ',' ', B , W ,' ',' ',' ', // 4
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
+                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
+            };
+
+            AiWithScoreTable.AiEvalBoard(gameBoard, scoreBoard, player);
+
+            var actualDrawString = Graphics.RenderToString(gameBoard, scoreBoard);
+
+            Assert.AreEqual(expectedRenderString, actualDrawString);
         }
     }
 }

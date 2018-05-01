@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using aspa.reversi.Models;
 
 namespace aspa.reversi
@@ -24,20 +25,61 @@ namespace aspa.reversi
             }
         }
 
+        public static bool CanPlayerMove(char[] gameBoard, char player)
+        {
+            var playerCanMove = false;
+
+            for (var y = 0; y < Constants.Row; y++)
+            {
+                for (var x = 0; x < Constants.Col && playerCanMove == false; x++)
+                {
+                    playerCanMove = IsValidMove(gameBoard, new Pos(x, y), player);
+                }
+            }
+
+            return playerCanMove;
+        }
+
+        public static void InitBoard(IList<char> gameBoard)
+        {
+            for (var i = 0; i < gameBoard.Count; i++)
+            {
+                gameBoard[i] = ' ';
+            }
+
+            gameBoard[(Constants.Row / 2 - 1) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.White;
+            gameBoard[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2)] = Constants.White;
+            gameBoard[(Constants.Row / 2 - 1) * Constants.Row + (Constants.Col / 2)] = Constants.Black;
+            gameBoard[(Constants.Row / 2) * Constants.Row + (Constants.Col / 2 - 1)] = Constants.Black;
+        }
+
+        public static int CalculateScore(char[] gameBoard, char player)
+        {
+            var score = 0;
+
+            for (var i = 0; i < Constants.BoardMax; i++)
+            {
+                if (gameBoard[i] == player)
+                {
+                    score++;
+                }
+            }
+
+            return score;
+        }
+
         public static Pos ReadInput(Config config, char[] gameBoard, char[] hintBoard)
         {
-            var move = new Pos();
-
-            // Todo: Implement AIEvalBoard
             if (IsAiPlayerTurn(config))
             {
-                //move = AIEvalBoard(gameBoard, hintBoard, config.Player);
-                //fprintf(stdout, "%c%d\n", move.x + 65, move.y);
+                var move = AiWithScoreTable.AiEvalBoard(gameBoard, hintBoard, config.Player);
+                Console.WriteLine(move);
+                return move;
             }
             else
             {
                 var input = ReadInput();
-                move = ReadMove(input);
+                var move = ReadMove(input);
                 while (!IsValidMove(gameBoard, move, config.Player))
                 {
                     Console.WriteLine("You can't place a piece there!\n");
@@ -49,9 +91,9 @@ namespace aspa.reversi
                     input = ReadInput();
                     move = ReadMove(input);
                 }
-            }
 
-            return move;
+                return move;
+            }
         }
 
         public static char GetOtherPlayer(char player)
@@ -151,7 +193,7 @@ namespace aspa.reversi
         // ie. if a marker of your own color is at the end of the row.
         // It takes the gameBoard, the current coordinate, the difference in x and y
         // and what value it should check for
-        private static bool TraceMove(char[] gameBoard, Pos move, int dx, int dy, char player)
+        public static bool TraceMove(char[] gameBoard, Pos move, int dx, int dy, char player)
         {
             var tMove = new Pos(move);
 
@@ -189,12 +231,12 @@ namespace aspa.reversi
             }
         }
 
-        private static bool IsInsideBoard(Pos pos)
+        public static bool IsInsideBoard(Pos pos)
         {
             return IsInsideBoard(pos.X, pos.Y);
         }
 
-        private static bool IsInsideBoard(int x, int y)
+        public static bool IsInsideBoard(int x, int y)
         {
             if (x < 0)
                 return false;

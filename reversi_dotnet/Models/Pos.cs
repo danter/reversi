@@ -27,9 +27,14 @@
             return char.ToUpper(character) - AsciiCharacterA;
         }
 
-        public static int ConvertDigit(char character)
+        public static int ConvertFromAsciiDigit(char character)
         {
             return character - AsciiCharacter1;
+        }
+
+        public static char ConvertToAsciiDigit(int character)
+        {
+            return (char)(character + AsciiCharacter1);
         }
 
         public static string ConvertPosToLetter(int pos)
