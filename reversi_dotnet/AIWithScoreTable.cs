@@ -5,26 +5,26 @@ namespace aspa.reversi
 {
     public class AiWithScoreTable
     {
-        public static char[] GetNumericHints(char[] gameBoard, char currentPlayer)
+        public static Board GetNumericHints(Board gameBoard, char currentPlayer)
         {
             var scoreBoard = EvaluateScores(gameBoard, currentPlayer);
-            return TransformScoreBoard(scoreBoard);
+            return gameBoard.TransformFromScoreBoard(scoreBoard);
         }
 
-        public static int[] EvaluateScores(char[] gameBoard, char currentPlayer)
+        public static int[] EvaluateScores(Board gameBoard, char currentPlayer)
         {
             var testBoard = ReversiRules.HintPlayer(gameBoard, currentPlayer);
 
             var scoreBoard = ApplyCaptureScores(gameBoard, testBoard, currentPlayer);
 
             // Add score for hotspots like corners and edges
-            var scoreTable = AiScoreTable();
+            var scoreTable = AiScoreTable(gameBoard);
 
-            for (var y = 0; y < Constants.Row; y++)
+            for (var y = 0; y < gameBoard.Height; y++)
             {
-                for (var x = 0; x < Constants.Col; x++)
+                for (var x = 0; x < gameBoard.Width; x++)
                 {
-                    var currentPos = y * Constants.Row + x;
+                    var currentPos = y * gameBoard.Width + x;
                     if (scoreBoard[currentPos] > 0)
                     {
                         scoreBoard[currentPos] += scoreTable[currentPos];
@@ -35,42 +35,23 @@ namespace aspa.reversi
             return scoreBoard;
         }
 
-        public static Pos GetAiMove(char[] gameBoard, char currentPlayer)
+        public static Pos GetAiMove(Board gameBoard, char currentPlayer)
         {
             var scoreBoard = EvaluateScores(gameBoard, currentPlayer);
-            return SelectRandomTopSpot(scoreBoard);
+            return SelectRandomTopSpot(scoreBoard, gameBoard.Width, gameBoard.Height);
         }
 
-        private static char[] TransformScoreBoard(int[] scoreBoard)
+        private static int[] ApplyCaptureScores(Board gameBoard, Board testBoard, char player)
         {
-            var hintBoard = new char[scoreBoard.Length];
+            var scoreBoard = new int[testBoard.Data.Length];
 
-            for (var i = 0; i < scoreBoard.Length; i++)
+            for (var y = 0; y < gameBoard.Height; y++)
             {
-                if (scoreBoard[i] <= 0)
+                for (var x = 0; x < gameBoard.Width; x++)
                 {
-                    hintBoard[i] = ' ';
-                }
-                else
-                {
-                    hintBoard[i] = Pos.ConvertToAsciiDigit(scoreBoard[i]);
-                }
-            }
+                    var currentPos = y * gameBoard.Width + x;
 
-            return hintBoard;
-        }
-
-        private static int[] ApplyCaptureScores(char[] gameBoard, char[] testBoard, char player)
-        {
-            var scoreBoard = new int[testBoard.Length];
-
-            for (var y = 0; y < Constants.Row; y++)
-            {
-                for (var x = 0; x < Constants.Col; x++)
-                {
-                    var currentPos = y * Constants.Row + x;
-
-                    if (testBoard[currentPos] == Constants.Hint)
+                    if (testBoard.GetPiece(x, y) == Constants.Hint)
                     {
                         scoreBoard[currentPos] = AiScoreCalc(gameBoard, new Pos(x, y), player);
                     }
@@ -84,16 +65,16 @@ namespace aspa.reversi
             return scoreBoard;
         }
 
-        private static Pos SelectRandomTopSpot(int[] scoreBoard)
+        private static Pos SelectRandomTopSpot(int[] scoreBoard, int height, int width)
         {
             var move = new Pos();
 
             var rand = new Random();
-            for (int y = 0, tmpScore = 0; y < Constants.Row; y++)
+            for (int y = 0, tmpScore = 0; y < height; y++)
             {
-                for (var x = 0; x < Constants.Col; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    var currentPos = y * Constants.Row + x;
+                    var currentPos = y * width + x;
                     if (scoreBoard[currentPos] > tmpScore)
                     {
                         tmpScore = scoreBoard[currentPos];
@@ -116,11 +97,11 @@ namespace aspa.reversi
             return move;
         }
 
-        public static int AiScoreCalc(char[] gameBoard, Pos pos, char player)
+        public static int AiScoreCalc(Board gameBoard, Pos pos, char player)
         {
             var score = 0;
 
-            if (gameBoard[pos.Y*Constants.Row+pos.X] != ' ')
+            if (gameBoard.GetPiece(pos) != ' ')
             {
                 return score;
             }
@@ -131,12 +112,12 @@ namespace aspa.reversi
             {
                 for (var x = pos.X-1; x <= pos.X+1; x++)
                 {
-                    if (!ReversiRules.IsInsideBoard(x, y))
+                    if (!gameBoard.IsInsideBoard(x, y))
                     {
                         continue;
                     }
 
-                    if (gameBoard[y * Constants.Row + x] != otherPlayer)
+                    if (gameBoard.GetPiece(x, y) != otherPlayer)
                     {
                         continue;
                     }
@@ -151,14 +132,14 @@ namespace aspa.reversi
             return score;
         }
 
-        private static int AiTraceMove(char[] gameBoard, Pos pos, int dx, int dy, char player)
+        private static int AiTraceMove(Board gameBoard, Pos pos, int dx, int dy, char player)
         {
             var tPos = new Pos(pos);
             var score = 0;
 
-            for (tPos.X += dx, tPos.Y += dy; ReversiRules.IsInsideBoard(tPos.X, tPos.Y); tPos.X += dx, tPos.Y += dy)
+            for (tPos.X += dx, tPos.Y += dy; gameBoard.IsInsideBoard(tPos.X, tPos.Y); tPos.X += dx, tPos.Y += dy)
             {
-                if (gameBoard[tPos.Y*Constants.Row+tPos.X] == player)
+                if (gameBoard.GetPiece(tPos) == player)
                 {
                     return score;
                 }
@@ -169,61 +150,61 @@ namespace aspa.reversi
             return score;
         }
 
-        public static int[] AiScoreTable()
+        public static int[] AiScoreTable(Board gameBoard)
         {
-            var scoreTable = new int[Constants.BoardMax];
+            var scoreTable = new int[gameBoard.Width * gameBoard.Height];
 
             // 1 bonus for sides and 2 bonus for corners
-            for (var i = 0; i < Constants.Col; i++)
-                scoreTable[0 * Constants.Row + i]++;
+            for (var i = 0; i < gameBoard.Height; i++)
+                scoreTable[0 * gameBoard.Width + i]++;
 
-            for (var i = 0; i < Constants.Row; i++)
-                scoreTable[i * Constants.Row + (Constants.Col - 1)]++;
+            for (var i = 0; i < gameBoard.Width; i++)
+                scoreTable[i * gameBoard.Width + (gameBoard.Height - 1)]++;
 
-            for (var i = 0; i < Constants.Row; i++)
-                scoreTable[i * Constants.Row + 0]++;
+            for (var i = 0; i < gameBoard.Width; i++)
+                scoreTable[i * gameBoard.Width + 0]++;
 
-            for (var i = 0; i < Constants.Col; i++)
-                scoreTable[(Constants.Row - 1) * Constants.Row + i]++;
+            for (var i = 0; i < gameBoard.Height; i++)
+                scoreTable[(gameBoard.Width - 1) * gameBoard.Width + i]++;
 
             // still a bit extra for corners
-            scoreTable[0 * Constants.Row + 0]++;
-            scoreTable[0 * Constants.Row + (Constants.Col - 1)]++;
-            scoreTable[(Constants.Row - 1) * Constants.Row + (Constants.Col - 1)]++;
-            scoreTable[(Constants.Row - 1) * Constants.Row + 0]++;
+            scoreTable[0 * gameBoard.Width + 0]++;
+            scoreTable[0 * gameBoard.Width + (gameBoard.Height - 1)]++;
+            scoreTable[(gameBoard.Width - 1) * gameBoard.Width + (gameBoard.Height - 1)]++;
+            scoreTable[(gameBoard.Width - 1) * gameBoard.Width + 0]++;
 
             // Preparation for bad zones
-            for (var y = 0; y < Constants.Row; y++)
+            for (var y = 0; y < gameBoard.Width; y++)
             {
-                for (var x = 0; x < Constants.Col; x++)
+                for (var x = 0; x < gameBoard.Height; x++)
                 {
-                    scoreTable[y * Constants.Row + x] += 2;
+                    scoreTable[y * gameBoard.Width + x] += 2;
                 }
             }
 
             // 1 minus for spots 1 square from sides,
             // 2 minus for spots 1 square from corners and
             // 2 minus for spots close to edges but 1 square from corners
-            for (var i = 1; i < Constants.Col - 1; i++)
-                scoreTable[1 * Constants.Row + i]--;
+            for (var i = 1; i < gameBoard.Height - 1; i++)
+                scoreTable[1 * gameBoard.Width + i]--;
 
-            for (var i = 1; i < Constants.Row - 1; i++)
-                scoreTable[i * Constants.Row + (Constants.Col - 2)]--;
+            for (var i = 1; i < gameBoard.Width - 1; i++)
+                scoreTable[i * gameBoard.Width + (gameBoard.Height - 2)]--;
 
-            for (var i = 1; i < Constants.Row - 1; i++)
-                scoreTable[i * Constants.Row + 1]--;
+            for (var i = 1; i < gameBoard.Width - 1; i++)
+                scoreTable[i * gameBoard.Width + 1]--;
 
-            for (var i = 1; i < Constants.Col - 1; i++)
-                scoreTable[(Constants.Row - 2) * Constants.Row + i]--;
+            for (var i = 1; i < gameBoard.Height - 1; i++)
+                scoreTable[(gameBoard.Width - 2) * gameBoard.Width + i]--;
 
-            scoreTable[1 * Constants.Row + 0] -= 2;
-            scoreTable[0 * Constants.Row + 1] -= 2;
-            scoreTable[0 * Constants.Row + (Constants.Col - 2)] -= 2;
-            scoreTable[1 * Constants.Row + (Constants.Col - 1)] -= 2;
-            scoreTable[(Constants.Row - 2) * Constants.Row + (Constants.Col - 1)] -= 2;
-            scoreTable[(Constants.Row - 1) * Constants.Row + (Constants.Col - 2)] -= 2;
-            scoreTable[(Constants.Row - 1) * Constants.Row + 1] -= 2;
-            scoreTable[(Constants.Row - 2) * Constants.Row + 0] -= 2;
+            scoreTable[1 * gameBoard.Width + 0] -= 2;
+            scoreTable[0 * gameBoard.Width + 1] -= 2;
+            scoreTable[0 * gameBoard.Width + (gameBoard.Height - 2)] -= 2;
+            scoreTable[1 * gameBoard.Width + (gameBoard.Height - 1)] -= 2;
+            scoreTable[(gameBoard.Width - 2) * gameBoard.Width + (gameBoard.Height - 1)] -= 2;
+            scoreTable[(gameBoard.Width - 1) * gameBoard.Width + (gameBoard.Height - 2)] -= 2;
+            scoreTable[(gameBoard.Width - 1) * gameBoard.Width + 1] -= 2;
+            scoreTable[(gameBoard.Width - 2) * gameBoard.Width + 0] -= 2;
 
             return scoreTable;
         }

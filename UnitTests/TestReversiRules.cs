@@ -12,7 +12,22 @@ namespace aspa.reversi.UnitTests
 
         private Config CreateDefaultConfig()
         {
-            return new Config { Player = Constants.Black, BoardRows = 8, BoardColumns = 8 };
+            return new Config { Player = Constants.Black, BoardWidth = 8, BoardHeight = 8 };
+        }
+
+        private Board CreateBoard(char[] boardStartData = null)
+        {
+            var board = new Board(8, 8);
+            if (boardStartData != null)
+            {
+                board.Data = boardStartData;
+            }
+            else
+            {
+                board.InitBoard();
+            }
+
+            return board;
         }
 
         [Test]
@@ -30,21 +45,8 @@ namespace aspa.reversi.UnitTests
         [Test]
         public void CreationReversiRules_CreateRversiRulesObject_CorrectStartBoardIsCreated()
         {
-            var expectedGameBoard = new[]
-            {
-                // A   B   C   D   E   F   G   H
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
-                ' ',' ',' ', W , B ,' ',' ',' ', // 3
-                ' ',' ',' ', B , W ,' ',' ',' ', // 4
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
-
-            };
-
             var config = CreateDefaultConfig();
+            var expectedGameBoard = CreateBoard();
 
             var reversi = new ReversiRules(config);
             var actualGameBoard = reversi.GameBoard;
@@ -86,18 +88,7 @@ namespace aspa.reversi.UnitTests
         public void IsValidMove_CheckIfSimpleMoveIsValid_ExpectCorrectBehaviourFromProvidedMoveResult(string moveInput, char currentPlayer, bool expectedMoveResult)
         {
             var move = InputHandler.ParseMove(moveInput);
-            var gameBoard = new[]
-            {
-                // A   B   C   D   E   F   G   H
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
-                ' ',' ',' ', W , B ,' ',' ',' ', // 3
-                ' ',' ',' ', B , W ,' ',' ',' ', // 4
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
-            };
+            var gameBoard = CreateBoard();
 
             var actualResult = ReversiRules.IsValidMove(gameBoard, move, currentPlayer);
 
@@ -219,9 +210,12 @@ namespace aspa.reversi.UnitTests
             ' ', H , H , H , H , H , H ,' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        public void HintPlayer_DrawHintsInHintBoard_ExpectCorrectHintsAreDrawn(char currentPlayer, char[] startBoard, char[] expectedHintBoard)
+        public void HintPlayer_DrawHintsInHintBoard_ExpectCorrectHintsAreDrawn(char currentPlayer, char[] startData, char[] expectedHintData)
         {
-            var actualHintBoard = ReversiRules.HintPlayer(startBoard, currentPlayer);
+            var gameBoard = CreateBoard(startData);
+            var expectedHintBoard = CreateBoard(expectedHintData);
+
+            var actualHintBoard = ReversiRules.HintPlayer(gameBoard, currentPlayer);
 
             Assert.AreEqual(expectedHintBoard, actualHintBoard);
         }
@@ -253,8 +247,7 @@ namespace aspa.reversi.UnitTests
         public void IsValidMove_CheckIfComplexMoveIsValid_ExpectCorrectBehaviourFromProvidedMoveResult(string moveInput, char currentPlayer, bool expectedMoveResult)
         {
             var move = InputHandler.ParseMove(moveInput);
-
-            var gameBoard = new[]
+            var boardData = new[]
             {
                 // A   B   C   D   E   F   G   H
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -266,6 +259,7 @@ namespace aspa.reversi.UnitTests
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 6
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 7
             };
+            var gameBoard = new Board(8,8){ Data = boardData};
 
             var actualResult = ReversiRules.IsValidMove(gameBoard, move, currentPlayer);
 
@@ -410,20 +404,19 @@ namespace aspa.reversi.UnitTests
             ' ', B , B , B , B , B ,' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        public void MakeMove_CheckIfMoveTurnsPiecesProperly_CorrectNewBoardIsObtained(string stringMove, char currentPlayer, char[] startBoard, char[] expectedBoardAfterMove)
+        public void MakeMove_CheckIfMoveTurnsPiecesProperly_CorrectNewBoardIsObtained(string stringMove, char currentPlayer, char[] startBoard, char[] expectedDataAfterMove)
         {
-            var expectedStringBoardAfterMove = new string(expectedBoardAfterMove);
-
+            var expectedBoardAfterMove = CreateBoard(expectedDataAfterMove);
             var config = CreateDefaultConfig();
             var move = InputHandler.ParseMove(stringMove);
-            var reversi = new ReversiRules(config) {GameBoard = startBoard};
+            var gameBoard = CreateBoard(startBoard);
+            var reversi = new ReversiRules(config) { GameBoard = gameBoard };
 
             reversi.MakeMove(move, currentPlayer);
             reversi.PlacePiece(move, currentPlayer);
+            var actualBoardAfterMove = reversi.GameBoard;
 
-            var actualBoardAfterMove = new string(startBoard);
-
-            Assert.AreEqual(expectedStringBoardAfterMove, actualBoardAfterMove);
+            Assert.AreEqual(expectedBoardAfterMove, actualBoardAfterMove);
         }
 
         [TestCase("E5 F3 E2 ", Constants.White, new[]
@@ -477,10 +470,11 @@ namespace aspa.reversi.UnitTests
             W , W , W , W , W , B , B , B , // 6
             W , B , B , B , B , B , B , B , // 7
         })]
-        public void LoadSaveGame_LoadGameLogFile_CorrectBoardAndCurrentPlayerIsRetrieved(string saveGame, char expectedCurrentPlayer, char[] expectedGameBoard)
+        public void LoadSaveGame_LoadGameLogFile_CorrectBoardAndCurrentPlayerIsRetrieved(string saveGame, char expectedCurrentPlayer, char[] expectedGameData)
         {
             var config = CreateDefaultConfig();
             config.SaveGame = saveGame;
+            var expectedGameBoard = CreateBoard(expectedGameData);
 
             var reversi = new ReversiRules(config);
             var actualGameBoard = reversi.GameBoard;

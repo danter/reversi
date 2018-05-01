@@ -6,10 +6,6 @@ namespace aspa.reversi.UnitTests
     [TestFixture]
     public class TestReversi
     {
-        private const char B = Constants.Black;
-        private const char W = Constants.White;
-        private const char H = Constants.Hint;
-
         [TestCase(new[] { "" }, AiPlayer.NoAi, BoardHints.NoHints, Constants.Black)]
         [TestCase(new[] { "-ai" }, AiPlayer.WhiteAi, BoardHints.NoHints, Constants.Black)]
         [TestCase(new[] { "-ai1" }, AiPlayer.WhiteAi, BoardHints.NoHints, Constants.Black)]
@@ -25,8 +21,8 @@ namespace aspa.reversi.UnitTests
                 Ai = expectedAiConfig,
                 Hints = expectedHintConfig,
                 Player = expectedPlayerConfig,
-                BoardRows = 8,
-                BoardColumns = 8,
+                BoardWidth = 8,
+                BoardHeight = 8,
                 SaveGame = null,
             };
 
@@ -101,18 +97,8 @@ namespace aspa.reversi.UnitTests
                 "  └─┴─┴─┴─┴─┴─┴─┴─┘\n";
 
             var player = Constants.Black;
-            var gameBoard = new[]
-            {
-                // A   B   C   D   E   F   G   H
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
-                ' ',' ',' ', W , B ,' ',' ',' ', // 3
-                ' ',' ',' ', B , W ,' ',' ',' ', // 4
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
-            };
+            var gameBoard = new Board(8,8);
+            gameBoard.InitBoard();
 
             var hintBoard = ReversiRules.HintPlayer(gameBoard, player);
 
@@ -145,18 +131,8 @@ namespace aspa.reversi.UnitTests
                 "  └─┴─┴─┴─┴─┴─┴─┴─┘\n";
 
             var player = Constants.Black;
-            var gameBoard = new[]
-            {
-                // A   B   C   D   E   F   G   H
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
-                ' ',' ',' ', W , B ,' ',' ',' ', // 3
-                ' ',' ',' ', B , W ,' ',' ',' ', // 4
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
-            };
+            var gameBoard = new Board(8, 8);
+            gameBoard.InitBoard();
 
             var hintBoard = AiWithScoreTable.GetNumericHints(gameBoard, player);
             var actualDrawString = Graphics.RenderToString(gameBoard, hintBoard);

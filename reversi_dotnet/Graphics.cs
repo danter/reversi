@@ -5,30 +5,28 @@ namespace aspa.reversi
 {
     public class Graphics
     {
-        public static string RenderToString(char[] board, char[] hints)
+        public static string RenderToString(Board board, Board hints)
         {
             var drawstring = "";
 
             drawstring += "   ";
-            for (var i = 0; i < Constants.Col; i++)
+            for (var i = 0; i < board.Width; i++)
                 drawstring += Pos.ConvertPosToLetter(i) + " ";
             drawstring += "\n";
 
             drawstring += "  ┌";
-            for (var i = 0; i < Constants.Col - 1; i++)
+            for (var i = 0; i < board.Width - 1; i++)
                 drawstring += "─┬";
             drawstring += "─┐\n";
 
-            for (var y = 0; y < Constants.Row; y++)
+            for (var y = 0; y < board.Height; y++)
             {
                 drawstring += " " + y + "│";
-                for (var x = 0; x < Constants.Col; x++)
+                for (var x = 0; x < board.Width; x++)
                 {
-                    var currentPos = y * Constants.Row + x;
-
-                    if (board[currentPos] == ' ')
+                    if (board.GetPiece(x, y) == ' ')
                     {
-                        switch (hints[currentPos])
+                        switch (hints.GetPiece(x, y))
                         {
                             case ' ':
                                 drawstring += " │";
@@ -37,49 +35,49 @@ namespace aspa.reversi
                                 drawstring += Constants.Hint + "│";
                                 break;
                             default:
-                                drawstring += hints[currentPos] + "│";
+                                drawstring += hints.GetPiece(x, y) + "│";
 
                                 break;
                         }
                     }
                     else
                     {
-                        drawstring += board[currentPos] + "│";
+                        drawstring += board.GetPiece(x, y) + "│";
                     }
 
                 }
 
                 drawstring += "\n";
 
-                if (y >= Constants.Row - 1)
+                if (y >= board.Height - 1)
                 {
                     continue;
                 }
 
                 drawstring += "  ├";
-                for (var i = 0; i < Constants.Col - 1; i++)
+                for (var i = 0; i < board.Width - 1; i++)
                     drawstring += "─┼";
                 drawstring += "─┤\n";
             }
 
             drawstring += "  └";
-            for (var i = 0; i < Constants.Col - 1; i++)
+            for (var i = 0; i < board.Width - 1; i++)
                 drawstring += "─┴";
             drawstring += "─┘\n";
 
             return drawstring;
         }
 
-        public static void PrintScore(char[] gameBoard)
+        public static void PrintScore(Board gameBoard)
         {
-            Console.WriteLine("BLACK score: " + ReversiRules.CalculateScore(gameBoard, Constants.Black));
-            Console.WriteLine("WHITE score: " + ReversiRules.CalculateScore(gameBoard, Constants.White));
+            Console.WriteLine("BLACK score: " + gameBoard.GetNumberOfPieces(Constants.Black));
+            Console.WriteLine("WHITE score: " + gameBoard.GetNumberOfPieces(Constants.White));
         }
 
-        public static void PrintFinalScore(char[] gameBoard)
+        public static void PrintFinalScore(Board gameBoard)
         {
-            var blackScore = ReversiRules.CalculateScore(gameBoard, Constants.Black);
-            var whiteScore = ReversiRules.CalculateScore(gameBoard, Constants.White);
+            var blackScore = gameBoard.GetNumberOfPieces(Constants.Black);
+            var whiteScore = gameBoard.GetNumberOfPieces(Constants.White);
 
             Console.WriteLine("\nNeither BLACK nor WHITE can make a move, GAME OVER!");
             Console.WriteLine("The score was:");
@@ -100,7 +98,7 @@ namespace aspa.reversi
             }
         }
 
-        public static void DrawBoard(char[] board, char[] hints)
+        public static void DrawBoard(Board board, Board hints)
         {
             Console.WriteLine();
             Console.WriteLine(RenderToString(board, hints));

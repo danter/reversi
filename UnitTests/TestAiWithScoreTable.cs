@@ -8,7 +8,21 @@ namespace aspa.reversi.UnitTests
     {
         private const char B = Constants.Black;
         private const char W = Constants.White;
-        private const char H = Constants.Hint;
+
+        private Board CreateBoard(char[] boardData = null)
+        {
+            var board = new Board(8, 8);
+            if (boardData != null)
+            {
+                board.Data = boardData;
+            }
+            else
+            {
+                board.InitBoard();
+            }
+
+            return board;
+        }
 
         [TestCase(Constants.Black, 0, 0, 0)]
         [TestCase(Constants.Black, 3, 3, 0)]
@@ -26,19 +40,8 @@ namespace aspa.reversi.UnitTests
         {
             var testPos = new Pos(xPos, yPos);
 
-            var gameBoard = new[]
-            {
-              // A   B   C   D   E   F   G   H
-              // 0   1   2   3   4   5   6   7
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
-                ' ',' ',' ', W , B ,' ',' ',' ', // 3
-                ' ',' ',' ', B , W ,' ',' ',' ', // 4
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
-            };
+            var gameBoard = new Board(8, 8);
+            gameBoard.InitBoard();
 
             var actualScore = AiWithScoreTable.AiScoreCalc(gameBoard, testPos, currentPlayer);
 
@@ -66,8 +69,7 @@ namespace aspa.reversi.UnitTests
         public void AiScoreCalc_TestBoardForCaptureScores_CaptureScoreIsAsExpected(char currentPlayer, int xPos, int yPos, int expectedScore)
         {
             var testPos = new Pos(xPos, yPos);
-
-            var gameBoard = new[]
+            var boardData  = new[]
             {
               // A   B   C   D   E   F   G   H
               // 0   1   2   3   4   5   6   7
@@ -80,6 +82,7 @@ namespace aspa.reversi.UnitTests
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 6
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 7
             };
+            var gameBoard = CreateBoard(boardData);
 
             var actualScore = AiWithScoreTable.AiScoreCalc(gameBoard, testPos, currentPlayer);
 
@@ -90,8 +93,7 @@ namespace aspa.reversi.UnitTests
         public void AiScoreCalc_TestBoardForAllSidesCaptureScores_CaptureScoreIsAsExpected(char currentPlayer, int xPos, int yPos, int expectedScore)
         {
             var testPos = new Pos(xPos, yPos);
-
-            var gameBoard = new[]
+            var boardData = new[]
             {
               // A   B   C   D   E   F   G   H
               // 0   1   2   3   4   5   6   7
@@ -104,6 +106,7 @@ namespace aspa.reversi.UnitTests
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 6
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 7
             };
+            var gameBoard = CreateBoard(boardData);
 
             var actualScore = AiWithScoreTable.AiScoreCalc(gameBoard, testPos, currentPlayer);
 
@@ -124,8 +127,9 @@ namespace aspa.reversi.UnitTests
                 1, 0, 1, 1, 1, 1, 0, 1,
                 5, 1, 3, 3, 3, 3, 1, 5,
             };
+            var gameBoard = CreateBoard();
 
-            var actualScoreTable = AiWithScoreTable.AiScoreTable();
+            var actualScoreTable = AiWithScoreTable.AiScoreTable(gameBoard);
 
             Assert.AreEqual(expectedScoreTable, actualScoreTable);
         }
@@ -134,22 +138,9 @@ namespace aspa.reversi.UnitTests
         public void AiEvalBoard_GetNumericHintBoard_ProperNumericHintBoardIsReturned()
         {
             var currenPlayer = Constants.Black;
+            var gameBoard = CreateBoard();
 
-            var gameBoard = new[]
-            {
-                // A   B   C   D   E   F   G   H
-                // 0   1   2   3   4   5   6   7
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 0
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 1
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 2
-                ' ',' ',' ', W , B ,' ',' ',' ', // 3
-                ' ',' ',' ', B , W ,' ',' ',' ', // 4
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 5
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 6
-                ' ',' ',' ',' ',' ',' ',' ',' ', // 7
-            };
-
-            var expectedHintBoard = new[]
+            var expectedHintData = new[]
             {
                 // A   B   C   D   E   F   G   H
                 // 0   1   2   3   4   5   6   7
@@ -162,6 +153,7 @@ namespace aspa.reversi.UnitTests
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 6
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 7
             };
+            var expectedHintBoard = CreateBoard(expectedHintData);
 
             var actualHintBoard = AiWithScoreTable.GetNumericHints(gameBoard, currenPlayer);
 

@@ -5,8 +5,8 @@
         public AiPlayer Ai;
         public BoardHints Hints;
         public char Player;
-        public int BoardRows;
-        public int BoardColumns;
+        public int BoardWidth;
+        public int BoardHeight;
         public string SaveGame;
 
         public override bool Equals(object obj)
@@ -36,12 +36,12 @@
                 return false;
             }
 
-            if (BoardRows != other.BoardRows)
+            if (BoardWidth != other.BoardWidth)
             {
                 return false;
             }
 
-            if (BoardColumns != other.BoardColumns)
+            if (BoardHeight != other.BoardHeight)
             {
                 return false;
             }
@@ -56,8 +56,8 @@
                 var hashCode = (int)Ai;
                 hashCode = (hashCode * 397) ^ (int)Hints;
                 hashCode = (hashCode * 397) ^ Player.GetHashCode();
-                hashCode = (hashCode * 397) ^ BoardRows;
-                hashCode = (hashCode * 397) ^ BoardColumns;
+                hashCode = (hashCode * 397) ^ BoardWidth;
+                hashCode = (hashCode * 397) ^ BoardHeight;
                 hashCode = (hashCode * 397) ^ (SaveGame != null ? SaveGame.GetHashCode() : 0);
                 return hashCode;
             }

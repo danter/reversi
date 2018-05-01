@@ -23,7 +23,7 @@ namespace aspa.reversi
             }
         }
 
-        public static Pos ReadInput(Config config, char[] gameBoard, char currentPlayer)
+        public static Pos ReadInput(Config config, Board gameBoard, char currentPlayer)
         {
             if (IsAiPlayerTurn(config, currentPlayer))
             {

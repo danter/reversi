@@ -27,8 +27,8 @@ namespace aspa.reversi
                 Ai = AiPlayer.NoAi,
                 Hints = BoardHints.NoHints,
                 Player = Constants.Black,
-                BoardRows = Constants.Row,
-                BoardColumns = Constants.Col,
+                BoardWidth = Constants.Row,
+                BoardHeight = Constants.Col,
             };
 
             for (var index = 0; index < arguments.Length; index++)
