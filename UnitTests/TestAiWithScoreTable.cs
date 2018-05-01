@@ -163,9 +163,7 @@ namespace aspa.reversi.UnitTests
                 ' ',' ',' ',' ',' ',' ',' ',' ', // 7
             };
 
-            var actualHintBoard = new char[Constants.BoardMax];
-
-            AiWithScoreTable.AiEvalBoard(gameBoard, actualHintBoard, currenPlayer);
+            var actualHintBoard = AiWithScoreTable.GetNumericHints(gameBoard, currenPlayer);
 
             Assert.AreEqual(expectedHintBoard, actualHintBoard);
         }
