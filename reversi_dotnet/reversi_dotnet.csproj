@@ -8,7 +8,7 @@
     <StartupObject>aspa.reversi.Program</StartupObject>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon />
-    <StartupObject />
+    <StartupObject>aspa.reversi.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">

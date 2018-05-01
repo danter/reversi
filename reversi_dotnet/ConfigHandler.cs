@@ -20,13 +20,15 @@ namespace aspa.reversi
             Console.WriteLine("-l <file>\tLoads the saved game <file>.\n");
         }
 
-        public static Config ReadCommandLineArgumants(char[] board, string[] arguments)
+        public static Config ReadCommandLineArgumants(string[] arguments)
         {
             var config = new Config
             {
                 Ai = AiPlayer.NoAi,
                 Hints = BoardHints.NoHints,
                 Player = Constants.Black,
+                BoardRows = Constants.Row,
+                BoardColumns = Constants.Col,
             };
 
             for (var index = 0; index < arguments.Length; index++)
@@ -60,7 +62,7 @@ namespace aspa.reversi
                         continue;
                     case "-l":
                         var saveFile = arguments[++index];
-                        config.Player = LoadSaveFile(board, saveFile);
+                        config.SaveGame = LoadSaveFile(saveFile);
                         if (config.Player == 0)
                         {
                             Console.WriteLine("File load failed, exiting.\n");
@@ -81,35 +83,7 @@ namespace aspa.reversi
             return config;
         }
 
-        public static char LoadSaveGame(char[] board, string saveGame)
-        {
-            var player = Constants.Black;
-            var coord = new Pos();
-
-            foreach (var character in saveGame)
-            {
-                if (char.IsLetter(character))
-                {
-                    coord.X = Pos.ConvertLetter(character);
-                }
-                else if (char.IsDigit(character))
-                {
-                    coord.Y = Pos.ConvertFromAsciiDigit(character);
-                }
-                else
-                {
-                    InputHandler.MakeMove(board, coord, player);
-                    InputHandler.PlacePiece(board, coord, player);
-
-                    player = player == Constants.Black ? Constants.White : Constants.Black;
-                }
-
-            }
-
-            return player;
-        }
-
-        public static char LoadSaveFile(char[] board, string saveFile)
+        public static string LoadSaveFile(string saveFile)
         {
             var logLine = "";
             if (File.Exists(saveFile))
@@ -123,7 +97,7 @@ namespace aspa.reversi
                 Environment.Exit(1);
             }
 
-            return LoadSaveGame(board, logLine);
+            return logLine;
         }
     }
 }

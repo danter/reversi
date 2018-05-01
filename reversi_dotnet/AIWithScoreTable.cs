@@ -5,13 +5,18 @@ namespace aspa.reversi
 {
     public class AiWithScoreTable
     {
-        public static Pos AiEvalBoard(char[] gameBoard, char[] hintBoard, char player)
+
+        public static char[] GetNumericHints(char[] gameBoard, char currentPlayer)
         {
-            var testBoard = new char[Constants.BoardMax];
+            var scoreBoard = EvaluateScores(gameBoard, currentPlayer);
+            return TransformScoreBoard(scoreBoard);
+        }
 
-            InputHandler.HintPlayer(gameBoard, testBoard, player);
+        public static int[] EvaluateScores(char[] gameBoard, char currentPlayer)
+        {
+            var testBoard = ReversiRules.HintPlayer(gameBoard, currentPlayer);
 
-            var scoreBoard = ApplyCaptureScores(gameBoard, testBoard, player);
+            var scoreBoard = ApplyCaptureScores(gameBoard, testBoard, currentPlayer);
 
             // Add score for hotspots like corners and edges
             var scoreTable = AiScoreTable();
@@ -28,13 +33,19 @@ namespace aspa.reversi
                 }
             }
 
-            TransformScoreBoard(scoreBoard, hintBoard);
-
-            return SelectRandomTopSpot(hintBoard);
+            return scoreBoard;
         }
 
-        private static void TransformScoreBoard(int[] scoreBoard, char[] hintBoard)
+        public static Pos AiEvalBoard(char[] gameBoard, char currentPlayer)
         {
+            var scoreBoard = EvaluateScores(gameBoard, currentPlayer);
+            return SelectRandomTopSpot(scoreBoard);
+        }
+
+        private static char[] TransformScoreBoard(int[] scoreBoard)
+        {
+            var hintBoard = new char[scoreBoard.Length];
+
             for (var i = 0; i < scoreBoard.Length; i++)
             {
                 if (scoreBoard[i] <= 0)
@@ -46,6 +57,8 @@ namespace aspa.reversi
                     hintBoard[i] = Pos.ConvertToAsciiDigit(scoreBoard[i]);
                 }
             }
+
+            return hintBoard;
         }
 
         private static int[] ApplyCaptureScores(char[] gameBoard, char[] testBoard, char player)
@@ -72,7 +85,7 @@ namespace aspa.reversi
             return scoreBoard;
         }
 
-        private static Pos SelectRandomTopSpot(char[] scoreBoard)
+        private static Pos SelectRandomTopSpot(int[] scoreBoard)
         {
             var move = new Pos();
 
@@ -113,13 +126,13 @@ namespace aspa.reversi
                 return score;
             }
 
-            var otherPlayer = InputHandler.GetOtherPlayer(player);
+            var otherPlayer = ReversiRules.GetOtherPlayer(player);
 
             for (var y = pos.Y-1; y <= pos.Y+1; y++)
             {
                 for (var x = pos.X-1; x <= pos.X+1; x++)
                 {
-                    if (!InputHandler.IsInsideBoard(x, y))
+                    if (!ReversiRules.IsInsideBoard(x, y))
                     {
                         continue;
                     }
@@ -129,7 +142,7 @@ namespace aspa.reversi
                         continue;
                     }
 
-                    if (InputHandler.TraceMove(gameBoard, pos, x-pos.X, y-pos.Y, player))
+                    if (ReversiRules.TraceMove(gameBoard, pos, x-pos.X, y-pos.Y, player))
                     {
                         score += AiTraceMove(gameBoard, pos, x - pos.X, y - pos.Y, player);
                     }
@@ -144,7 +157,7 @@ namespace aspa.reversi
             var tPos = new Pos(pos);
             var score = 0;
 
-            for (tPos.X += dx, tPos.Y += dy; InputHandler.IsInsideBoard(tPos.X, tPos.Y); tPos.X += dx, tPos.Y += dy)
+            for (tPos.X += dx, tPos.Y += dy; ReversiRules.IsInsideBoard(tPos.X, tPos.Y); tPos.X += dx, tPos.Y += dy)
             {
                 if (gameBoard[tPos.Y*Constants.Row+tPos.X] == player)
                 {

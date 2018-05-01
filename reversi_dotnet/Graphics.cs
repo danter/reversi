@@ -72,14 +72,14 @@ namespace aspa.reversi
 
         public static void PrintScore(char[] gameBoard)
         {
-            Console.WriteLine("BLACK score: " + InputHandler.CalculateScore(gameBoard, Constants.Black));
-            Console.WriteLine("WHITE score: " + InputHandler.CalculateScore(gameBoard, Constants.White));
+            Console.WriteLine("BLACK score: " + ReversiRules.CalculateScore(gameBoard, Constants.Black));
+            Console.WriteLine("WHITE score: " + ReversiRules.CalculateScore(gameBoard, Constants.White));
         }
 
         public static void PrintFinalScore(char[] gameBoard)
         {
-            var blackScore = InputHandler.CalculateScore(gameBoard, Constants.Black);
-            var whiteScore = InputHandler.CalculateScore(gameBoard, Constants.White);
+            var blackScore = ReversiRules.CalculateScore(gameBoard, Constants.Black);
+            var whiteScore = ReversiRules.CalculateScore(gameBoard, Constants.White);
 
             Console.WriteLine("\nNeither BLACK nor WHITE can make a move, GAME OVER!");
             Console.WriteLine("The score was:");
@@ -102,8 +102,24 @@ namespace aspa.reversi
 
         public static void DrawBoard(char[] board, char[] hints)
         {
+            Console.WriteLine();
             Console.WriteLine(RenderToString(board, hints));
+            Console.WriteLine();
         }
 
+        public static void AnnouncePlayerMove(char currentPlayer)
+        {
+            switch (currentPlayer)
+            {
+                case Constants.Black:
+                    Console.Write("BLACK, make your move: ");
+                    break;
+                case Constants.White:
+                    Console.Write("WHITE, make your move: ");
+                    break;
+                default:
+                    return;
+            }
+        }
     }
 }
