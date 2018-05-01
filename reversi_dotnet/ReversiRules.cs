@@ -17,7 +17,7 @@ namespace aspa.reversi
             GameBoard = new Board(gameConfig.BoardWidth, gameConfig.BoardHeight);
             GameBoard.InitBoard();
 
-            CurrentPlayer = !string.IsNullOrEmpty(gameConfig.SaveGame) ? LoadSaveGame(gameConfig.SaveGame) : gameConfig.Player;
+            CurrentPlayer = !string.IsNullOrEmpty(gameConfig.SaveGame) ? LoadSaveGame(gameConfig.SaveGame) : gameConfig.StartPlayer;
         }
 
         public char LoadSaveGame(string saveGame)
@@ -40,7 +40,7 @@ namespace aspa.reversi
                     MakeMove(move, player);
                     PlacePiece(move, player);
 
-                    player = player == Constants.Black ? Constants.White : Constants.Black;
+                    player = GetOtherPlayer(player);
                 }
             }
 
@@ -79,13 +79,13 @@ namespace aspa.reversi
                 if (CurrentPlayer == Constants.Black && !canBlackMove)
                 {
                     Console.WriteLine("\nBLACK, can't make a move");
-                    CurrentPlayer = Constants.White;
+                    CurrentPlayer = GetOtherPlayer(CurrentPlayer);
                 }
 
                 if (CurrentPlayer == Constants.White && !canWhiteMove)
                 {
                     Console.WriteLine("\nWHITE, can't make a move");
-                    CurrentPlayer = Constants.Black;
+                    CurrentPlayer = GetOtherPlayer(CurrentPlayer);
                 }
             }
 

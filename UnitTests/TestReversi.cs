@@ -6,21 +6,25 @@ namespace aspa.reversi.UnitTests
     [TestFixture]
     public class TestReversi
     {
-        [TestCase(new[] { "" }, AiPlayer.NoAi, BoardHints.NoHints, Constants.Black)]
-        [TestCase(new[] { "-ai" }, AiPlayer.WhiteAi, BoardHints.NoHints, Constants.Black)]
-        [TestCase(new[] { "-ai1" }, AiPlayer.WhiteAi, BoardHints.NoHints, Constants.Black)]
-        [TestCase(new[] { "-ai2" }, AiPlayer.BlackAi, BoardHints.NoHints, Constants.Black)]
-        [TestCase(new[] { "-ai3" }, AiPlayer.BothAi, BoardHints.NoHints, Constants.Black)]
-        [TestCase(new[] { "-ht" }, AiPlayer.NoAi, BoardHints.Hints, Constants.Black)]
-        [TestCase(new[] { "-hn" }, AiPlayer.NoAi, BoardHints.NumericHints, Constants.Black)]
-        [TestCase(new[] { "-ai3", "-hn" }, AiPlayer.BothAi, BoardHints.NumericHints, Constants.Black)]
-        public void ConfigHandler_ReadCommandLine_CorrectParametersAreReturned(string[] commandLine, AiPlayer expectedAiConfig, BoardHints expectedHintConfig, char expectedPlayerConfig)
+        private const char Black = Constants.Black;
+        private const char White = Constants.White;
+
+
+        [TestCase(new[] { "" }, Player.None, BoardHints.NoHints, Black)]
+        [TestCase(new[] { "-ai" }, Player.White, BoardHints.NoHints, Black)]
+        [TestCase(new[] { "-ai1" }, Player.White, BoardHints.NoHints, Black)]
+        [TestCase(new[] { "-ai2" }, Player.Black, BoardHints.NoHints, Black)]
+        [TestCase(new[] { "-ai3" }, Player.Both, BoardHints.NoHints, Black)]
+        [TestCase(new[] { "-ht" }, Player.None, BoardHints.Hints, Black)]
+        [TestCase(new[] { "-hn" }, Player.None, BoardHints.NumericHints, Black)]
+        [TestCase(new[] { "-ai3", "-hn" }, Player.Both, BoardHints.NumericHints, Black)]
+        public void ConfigHandler_ReadCommandLine_CorrectParametersAreReturned(string[] commandLine, Player expectedAiConfig, BoardHints expectedHintConfig, char expectedPlayerConfig)
         {
             var expectedConfig = new Config
             {
                 Ai = expectedAiConfig,
                 Hints = expectedHintConfig,
-                Player = expectedPlayerConfig,
+                StartPlayer = expectedPlayerConfig,
                 BoardWidth = 8,
                 BoardHeight = 8,
                 SaveGame = null,
@@ -96,7 +100,7 @@ namespace aspa.reversi.UnitTests
                 " 7│ │ │ │ │ │ │ │ │\n" +
                 "  └─┴─┴─┴─┴─┴─┴─┴─┘\n";
 
-            var player = Constants.Black;
+            var player = Black;
             var gameBoard = new Board(8,8);
             gameBoard.InitBoard();
 
@@ -130,7 +134,7 @@ namespace aspa.reversi.UnitTests
                 " 7│ │ │ │ │ │ │ │ │\n" +
                 "  └─┴─┴─┴─┴─┴─┴─┴─┘\n";
 
-            var player = Constants.Black;
+            var player = Black;
             var gameBoard = new Board(8, 8);
             gameBoard.InitBoard();
 

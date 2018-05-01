@@ -6,6 +6,9 @@ namespace aspa.reversi
 {
     public class ConfigHandler
     {
+        public static int DefaultHeight = 8;
+        public static int DefaultWidth = 8;
+
         public static void DisplayHelp()
         {
             Console.WriteLine();
@@ -24,11 +27,11 @@ namespace aspa.reversi
         {
             var config = new Config
             {
-                Ai = AiPlayer.NoAi,
+                Ai = Player.None,
                 Hints = BoardHints.NoHints,
-                Player = Constants.Black,
-                BoardWidth = Constants.Row,
-                BoardHeight = Constants.Col,
+                StartPlayer = Constants.Black,
+                BoardWidth = DefaultWidth,
+                BoardHeight = DefaultHeight,
             };
 
             for (var index = 0; index < arguments.Length; index++)
@@ -46,13 +49,13 @@ namespace aspa.reversi
                         continue;
                     case "-ai":
                     case "-ai1":
-                        config.Ai = AiPlayer.WhiteAi;
+                        config.Ai = Player.White;
                         continue;
                     case "-ai2":
-                        config.Ai = AiPlayer.BlackAi;
+                        config.Ai = Player.Black;
                         continue;
                     case "-ai3":
-                        config.Ai = AiPlayer.BothAi;
+                        config.Ai = Player.Both;
                         continue;
                     case "-ht":
                         config.Hints = BoardHints.Hints;
@@ -63,7 +66,7 @@ namespace aspa.reversi
                     case "-l":
                         var saveFile = arguments[++index];
                         config.SaveGame = LoadSaveFile(saveFile);
-                        if (config.Player == 0)
+                        if (config.StartPlayer == 0)
                         {
                             Console.WriteLine("File load failed, exiting.\n");
                             DisplayHelp();

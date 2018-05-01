@@ -6,6 +6,8 @@ namespace aspa.reversi.UnitTests
     [TestFixture]
     public class TestAiWithScoreTable
     {
+        private const char Black = Constants.Black;
+        private const char White = Constants.White;
         private const char B = Constants.Black;
         private const char W = Constants.White;
 
@@ -24,18 +26,18 @@ namespace aspa.reversi.UnitTests
             return board;
         }
 
-        [TestCase(Constants.Black, 0, 0, 0)]
-        [TestCase(Constants.Black, 3, 3, 0)]
-        [TestCase(Constants.Black, 3, 2, 1)]
-        [TestCase(Constants.Black, 2, 3, 1)]
-        [TestCase(Constants.Black, 5, 4, 1)]
-        [TestCase(Constants.Black, 4, 5, 1)]
-        [TestCase(Constants.White, 3, 2, 0)]
-        [TestCase(Constants.White, 4, 4, 0)]
-        [TestCase(Constants.White, 4, 2, 1)]
-        [TestCase(Constants.White, 5, 3, 1)]
-        [TestCase(Constants.White, 2, 4, 1)]
-        [TestCase(Constants.White, 3, 5, 1)]
+        [TestCase(Black, 0, 0, 0)]
+        [TestCase(Black, 3, 3, 0)]
+        [TestCase(Black, 3, 2, 1)]
+        [TestCase(Black, 2, 3, 1)]
+        [TestCase(Black, 5, 4, 1)]
+        [TestCase(Black, 4, 5, 1)]
+        [TestCase(White, 3, 2, 0)]
+        [TestCase(White, 4, 4, 0)]
+        [TestCase(White, 4, 2, 1)]
+        [TestCase(White, 5, 3, 1)]
+        [TestCase(White, 2, 4, 1)]
+        [TestCase(White, 3, 5, 1)]
         public void AiScoreCalc_TestSimpleBoardForCaptureScores_CaptureScoreIsAsExpected(char currentPlayer, int xPos, int yPos, int expectedScore)
         {
             var testPos = new Pos(xPos, yPos);
@@ -48,24 +50,24 @@ namespace aspa.reversi.UnitTests
             Assert.AreEqual(expectedScore, actualScore);
         }
 
-        [TestCase(Constants.Black, 4, 0, 0)]
-        [TestCase(Constants.Black, 1, 2, 1)]
-        [TestCase(Constants.Black, 3, 2, 1)]
-        [TestCase(Constants.Black, 0, 3, 3)]
-        [TestCase(Constants.Black, 2, 4, 2)]
-        [TestCase(Constants.Black, 5, 4, 1)]
-        [TestCase(Constants.Black, 6, 6, 3)]
-        [TestCase(Constants.White, 4, 0, 3)]
-        [TestCase(Constants.White, 0, 3, 0)]
-        [TestCase(Constants.White, 1, 1, 1)]
-        [TestCase(Constants.White, 2, 1, 1)]
-        [TestCase(Constants.White, 3, 1, 1)]
-        [TestCase(Constants.White, 5, 1, 1)]
-        [TestCase(Constants.White, 5, 3, 1)]
-        [TestCase(Constants.White, 2, 4, 1)]
-        [TestCase(Constants.White, 3, 5, 3)]
-        [TestCase(Constants.White, 4, 6, 1)]
-        [TestCase(Constants.White, 5, 6, 2)]
+        [TestCase(Black, 4, 0, 0)]
+        [TestCase(Black, 1, 2, 1)]
+        [TestCase(Black, 3, 2, 1)]
+        [TestCase(Black, 0, 3, 3)]
+        [TestCase(Black, 2, 4, 2)]
+        [TestCase(Black, 5, 4, 1)]
+        [TestCase(Black, 6, 6, 3)]
+        [TestCase(White, 4, 0, 3)]
+        [TestCase(White, 0, 3, 0)]
+        [TestCase(White, 1, 1, 1)]
+        [TestCase(White, 2, 1, 1)]
+        [TestCase(White, 3, 1, 1)]
+        [TestCase(White, 5, 1, 1)]
+        [TestCase(White, 5, 3, 1)]
+        [TestCase(White, 2, 4, 1)]
+        [TestCase(White, 3, 5, 3)]
+        [TestCase(White, 4, 6, 1)]
+        [TestCase(White, 5, 6, 2)]
         public void AiScoreCalc_TestBoardForCaptureScores_CaptureScoreIsAsExpected(char currentPlayer, int xPos, int yPos, int expectedScore)
         {
             var testPos = new Pos(xPos, yPos);
@@ -89,7 +91,7 @@ namespace aspa.reversi.UnitTests
             Assert.AreEqual(expectedScore, actualScore);
         }
 
-        [TestCase(Constants.Black, 4, 3, 8)]
+        [TestCase(Black, 4, 3, 8)]
         public void AiScoreCalc_TestBoardForAllSidesCaptureScores_CaptureScoreIsAsExpected(char currentPlayer, int xPos, int yPos, int expectedScore)
         {
             var testPos = new Pos(xPos, yPos);

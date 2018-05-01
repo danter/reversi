@@ -6,13 +6,15 @@ namespace aspa.reversi.UnitTests
     [TestFixture]
     public class TestReversiRules
     {
-        private const char B = Constants.Black;
-        private const char W = Constants.White;
+        private const char Black = Constants.Black;
+        private const char White = Constants.White;
         private const char H = Constants.Hint;
+        private const char B = Black;
+        private const char W = White;
 
         private Config CreateDefaultConfig()
         {
-            return new Config { Player = Constants.Black, BoardWidth = 8, BoardHeight = 8 };
+            return new Config { StartPlayer = Black, BoardWidth = 8, BoardHeight = 8 };
         }
 
         private Board CreateBoard(char[] boardStartData = null)
@@ -33,7 +35,7 @@ namespace aspa.reversi.UnitTests
         [Test]
         public void CreationReversiRules_CreateRversiRulesObject_CorrectStartPlayerIsStarting()
         {
-            var expectedCurrentPlayer = Constants.Black;
+            var expectedCurrentPlayer = Black;
             var config = CreateDefaultConfig();
 
             var reversi = new ReversiRules(config);
@@ -55,36 +57,36 @@ namespace aspa.reversi.UnitTests
         }
 
 
-        [TestCase("D2", Constants.Black, true)]
-        [TestCase("C3", Constants.Black, true)]
-        [TestCase("E5", Constants.Black, true)]
-        [TestCase("F4", Constants.Black, true)]
-        [TestCase("E2", Constants.Black, false)]
-        [TestCase("F3", Constants.Black, false)]
-        [TestCase("C4", Constants.Black, false)]
-        [TestCase("D5", Constants.Black, false)]
-        [TestCase("A0", Constants.Black, false)]
-        [TestCase("H0", Constants.Black, false)]
-        [TestCase("A7", Constants.Black, false)]
-        [TestCase("H7", Constants.Black, false)]
-        [TestCase("D3", Constants.Black, false)]
-        [TestCase("E3", Constants.Black, false)]
-        [TestCase("D4", Constants.Black, false)]
-        [TestCase("E4", Constants.Black, false)]
-        [TestCase("E2", Constants.White, true)]
-        [TestCase("F3", Constants.White, true)]
-        [TestCase("C4", Constants.White, true)]
-        [TestCase("D5", Constants.White, true)]
-        [TestCase("I0", Constants.White, false)]
-        [TestCase("A8", Constants.White, false)]
-        [TestCase("A0", Constants.White, false)]
-        [TestCase("H0", Constants.White, false)]
-        [TestCase("A7", Constants.White, false)]
-        [TestCase("H7", Constants.White, false)]
-        [TestCase("D3", Constants.White, false)]
-        [TestCase("E3", Constants.White, false)]
-        [TestCase("D4", Constants.White, false)]
-        [TestCase("E4", Constants.White, false)]
+        [TestCase("D2", Black, true)]
+        [TestCase("C3", Black, true)]
+        [TestCase("E5", Black, true)]
+        [TestCase("F4", Black, true)]
+        [TestCase("E2", Black, false)]
+        [TestCase("F3", Black, false)]
+        [TestCase("C4", Black, false)]
+        [TestCase("D5", Black, false)]
+        [TestCase("A0", Black, false)]
+        [TestCase("H0", Black, false)]
+        [TestCase("A7", Black, false)]
+        [TestCase("H7", Black, false)]
+        [TestCase("D3", Black, false)]
+        [TestCase("E3", Black, false)]
+        [TestCase("D4", Black, false)]
+        [TestCase("E4", Black, false)]
+        [TestCase("E2", White, true)]
+        [TestCase("F3", White, true)]
+        [TestCase("C4", White, true)]
+        [TestCase("D5", White, true)]
+        [TestCase("I0", White, false)]
+        [TestCase("A8", White, false)]
+        [TestCase("A0", White, false)]
+        [TestCase("H0", White, false)]
+        [TestCase("A7", White, false)]
+        [TestCase("H7", White, false)]
+        [TestCase("D3", White, false)]
+        [TestCase("E3", White, false)]
+        [TestCase("D4", White, false)]
+        [TestCase("E4", White, false)]
         public void IsValidMove_CheckIfSimpleMoveIsValid_ExpectCorrectBehaviourFromProvidedMoveResult(string moveInput, char currentPlayer, bool expectedMoveResult)
         {
             var move = InputHandler.ParseMove(moveInput);
@@ -95,7 +97,7 @@ namespace aspa.reversi.UnitTests
             Assert.AreEqual(expectedMoveResult, actualResult);
         }
 
-        [TestCase(Constants.Black, new[]
+        [TestCase(Black, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -118,7 +120,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase(Constants.White, new[]
+        [TestCase(White, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -141,7 +143,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase(Constants.Black, new[]
+        [TestCase(Black, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -164,7 +166,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase(Constants.White, new[]
+        [TestCase(White, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -187,7 +189,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ', H ,' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase(Constants.White, new[]
+        [TestCase(White, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -220,30 +222,30 @@ namespace aspa.reversi.UnitTests
             Assert.AreEqual(expectedHintBoard, actualHintBoard);
         }
 
-        [TestCase("E0", Constants.White, true)]
-        [TestCase("B1", Constants.White, true)]
-        [TestCase("C1", Constants.White, true)]
-        [TestCase("D1", Constants.White, true)]
-        [TestCase("F2", Constants.White, true)]
-        [TestCase("F3", Constants.White, true)]
-        [TestCase("C4", Constants.White, true)]
-        [TestCase("D5", Constants.White, true)]
-        [TestCase("E5", Constants.White, true)]
-        [TestCase("D2", Constants.Black, true)]
-        [TestCase("A4", Constants.Black, true)]
-        [TestCase("C4", Constants.Black, true)]
-        [TestCase("F4", Constants.Black, true)]
-        [TestCase("E5", Constants.Black, true)]
-        [TestCase("B6", Constants.Black, true)]
-        [TestCase("G6", Constants.Black, true)]
-        [TestCase("F0", Constants.White, false)]
-        [TestCase("B2", Constants.White, false)]
-        [TestCase("D2", Constants.White, false)]
-        [TestCase("E0", Constants.Black, false)]
-        [TestCase("C1", Constants.Black, false)]
-        [TestCase("F2", Constants.Black, false)]
-        [TestCase("B4", Constants.Black, false)]
-        [TestCase("D5", Constants.Black, false)]
+        [TestCase("E0", White, true)]
+        [TestCase("B1", White, true)]
+        [TestCase("C1", White, true)]
+        [TestCase("D1", White, true)]
+        [TestCase("F2", White, true)]
+        [TestCase("F3", White, true)]
+        [TestCase("C4", White, true)]
+        [TestCase("D5", White, true)]
+        [TestCase("E5", White, true)]
+        [TestCase("D2", Black, true)]
+        [TestCase("A4", Black, true)]
+        [TestCase("C4", Black, true)]
+        [TestCase("F4", Black, true)]
+        [TestCase("E5", Black, true)]
+        [TestCase("B6", Black, true)]
+        [TestCase("G6", Black, true)]
+        [TestCase("F0", White, false)]
+        [TestCase("B2", White, false)]
+        [TestCase("D2", White, false)]
+        [TestCase("E0", Black, false)]
+        [TestCase("C1", Black, false)]
+        [TestCase("F2", Black, false)]
+        [TestCase("B4", Black, false)]
+        [TestCase("D5", Black, false)]
         public void IsValidMove_CheckIfComplexMoveIsValid_ExpectCorrectBehaviourFromProvidedMoveResult(string moveInput, char currentPlayer, bool expectedMoveResult)
         {
             var move = InputHandler.ParseMove(moveInput);
@@ -266,7 +268,7 @@ namespace aspa.reversi.UnitTests
             Assert.AreEqual(expectedMoveResult, actualResult);
         }
 
-        [TestCase("G6", Constants.Black, new[]
+        [TestCase("G6", Black, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -289,7 +291,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ', B ,' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase("E5", Constants.Black, new[]
+        [TestCase("E5", Black, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -312,7 +314,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase("E0", Constants.White, new[]
+        [TestCase("E0", White, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -335,7 +337,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase("D5", Constants.White, new[]
+        [TestCase("D5", White, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -358,7 +360,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase("C4", Constants.Black, new[]
+        [TestCase("C4", Black, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -381,7 +383,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ', B ,' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase("D4", Constants.Black, new[]
+        [TestCase("D4", Black, new[]
         {
             // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -419,7 +421,7 @@ namespace aspa.reversi.UnitTests
             Assert.AreEqual(expectedBoardAfterMove, actualBoardAfterMove);
         }
 
-        [TestCase("E5 F3 E2 ", Constants.White, new[]
+        [TestCase("E5 F3 E2 ", White, new[]
         {
           // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -431,7 +433,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase("E5 F3 E2 D5 ", Constants.Black, new[]
+        [TestCase("E5 F3 E2 D5 ", Black, new[]
         {
           // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ',' ',' ',' ',' ', // 0
@@ -443,7 +445,7 @@ namespace aspa.reversi.UnitTests
             ' ',' ',' ',' ',' ',' ',' ',' ', // 6
             ' ',' ',' ',' ',' ',' ',' ',' ', // 7
         })]
-        [TestCase("E5 F3 E2 D5 G3 H3 C5 E1 E0 ", Constants.White, new[]
+        [TestCase("E5 F3 E2 D5 G3 H3 C5 E1 E0 ", White, new[]
         {
           // A   B   C   D   E   F   G   H
             ' ',' ',' ',' ', B ,' ',' ',' ', // 0
@@ -458,7 +460,7 @@ namespace aspa.reversi.UnitTests
         [TestCase("E5 F3 F2 D5 C5 D6 E7 D7 C7 F5 D2 C3 F4 F1 G5 F6 " +
                   "G3 H3 F0 H4 F7 B5 H2 E1 D1 D0 H5 G7 H7 C1 A5 H6 " +
                   "B2 H1 H0 A3 B0 B3 C2 C0 E0 C6 E2 A4 A2 C4 B4 G0 " +
-                  "G2 A0 A6 E6 B7 A1 B1 A7 G4 B6 G6 G1 ", Constants.Black, new[]
+                  "G2 A0 A6 E6 B7 A1 B1 A7 G4 B6 G6 G1 ", Black, new[]
         {
          // A   B   C   D   E   F   G   H
             W , W , W , W , W , W , W , B , // 0

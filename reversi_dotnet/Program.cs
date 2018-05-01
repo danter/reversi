@@ -8,7 +8,7 @@ namespace aspa.reversi
         static void Main(string[] args)
         {
             var config = ConfigHandler.ReadCommandLineArgumants(args);
-            config.Ai = AiPlayer.WhiteAi;
+            config.Ai = Player.White;
             var reversi = new ReversiRules(config);
 
             reversi.RunGameLoop();

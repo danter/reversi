@@ -11,11 +11,11 @@ namespace aspa.reversi
 
             switch (ai)
             {
-                case AiPlayer.BothAi:
+                case Player.Both:
                     return true;
-                case AiPlayer.BlackAi when currentPlayer == Constants.Black:
+                case Player.Black when currentPlayer == Constants.Black:
                     return true;
-                case AiPlayer.WhiteAi when currentPlayer == Constants.White:
+                case Player.White when currentPlayer == Constants.White:
                     return true;
 
                 default:

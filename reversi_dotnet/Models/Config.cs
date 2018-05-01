@@ -2,9 +2,9 @@
 {
     public class Config
     {
-        public AiPlayer Ai;
+        public Player Ai;
         public BoardHints Hints;
-        public char Player;
+        public char StartPlayer;
         public int BoardWidth;
         public int BoardHeight;
         public string SaveGame;
@@ -31,7 +31,7 @@
                 return false;
             }
 
-            if (Player != other.Player)
+            if (StartPlayer != other.StartPlayer)
             {
                 return false;
             }
@@ -55,7 +55,7 @@
             {
                 var hashCode = (int)Ai;
                 hashCode = (hashCode * 397) ^ (int)Hints;
-                hashCode = (hashCode * 397) ^ Player.GetHashCode();
+                hashCode = (hashCode * 397) ^ StartPlayer.GetHashCode();
                 hashCode = (hashCode * 397) ^ BoardWidth;
                 hashCode = (hashCode * 397) ^ BoardHeight;
                 hashCode = (hashCode * 397) ^ (SaveGame != null ? SaveGame.GetHashCode() : 0);
