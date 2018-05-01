@@ -27,7 +27,7 @@ namespace aspa.reversi
         {
             if (IsAiPlayerTurn(config, currentPlayer))
             {
-                var move = AiWithScoreTable.AiEvalBoard(gameBoard, currentPlayer);
+                var move = AiWithScoreTable.GetAiMove(gameBoard, currentPlayer);
                 Console.WriteLine(move);
                 return move;
             }

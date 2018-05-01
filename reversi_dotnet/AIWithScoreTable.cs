@@ -5,7 +5,6 @@ namespace aspa.reversi
 {
     public class AiWithScoreTable
     {
-
         public static char[] GetNumericHints(char[] gameBoard, char currentPlayer)
         {
             var scoreBoard = EvaluateScores(gameBoard, currentPlayer);
@@ -36,7 +35,7 @@ namespace aspa.reversi
             return scoreBoard;
         }
 
-        public static Pos AiEvalBoard(char[] gameBoard, char currentPlayer)
+        public static Pos GetAiMove(char[] gameBoard, char currentPlayer)
         {
             var scoreBoard = EvaluateScores(gameBoard, currentPlayer);
             return SelectRandomTopSpot(scoreBoard);
