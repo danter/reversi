@@ -18,6 +18,9 @@
   <ItemGroup>
     <ClInclude Include="include\reversi.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Scripts\reversi.proj" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{0CE1C733-15A8-48D1-9194-82D81D56DDCA}</ProjectGuid>
